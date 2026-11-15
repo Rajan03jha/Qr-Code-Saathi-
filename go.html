@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b1b2b">
+<title>QR साथी से बना QR</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@400;500;600&display=swap">
+<style>
+:root {
+  color-scheme: light dark;
+  --surface: #ffffff; --fg: #0f1b26; --muted: #52626f; --line: #d3dce4; --field: #f1f5f8;
+  --accent: #0f766e; --accent-fg: #ffffff; --warn-bg: #fff3cf; --warn-fg: #5f4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --surface: #131d27; --fg: #e6edf2; --muted: #9bb0be; --line: #263644; --field: #0d161e; --accent: #2dd4bf; --accent-fg: #052b27; --warn-bg: #3a2e0e; --warn-fg: #f3d98a; }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; min-height: 100vh; display: grid; place-items: center; color: var(--fg);
+  font: 16px/1.55 "Hind", system-ui, sans-serif;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background:
+    radial-gradient(800px 380px at 100% 0%, rgba(109, 40, 217, .5), transparent 60%),
+    radial-gradient(700px 380px at 0% 100%, rgba(15, 118, 110, .55), transparent 60%),
+    radial-gradient(500px 300px at 70% 110%, rgba(198, 40, 40, .35), transparent 60%),
+    #0b1b2b;
+}
+.card { width: 100%; max-width: 460px; background: var(--surface); border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 24px 60px -24px rgba(0, 0, 0, .7); }
+.logo { width: 56px; height: 56px; border-radius: 14px; }
+h1 { font: 800 24px/1.2 "Baloo 2", "Hind", sans-serif; margin: 0; }
+p { margin: 0; }
+.by a { color: var(--accent); font-weight: 600; }
+.dest { background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.dest small { color: var(--muted); font-size: 13px; }
+.dest strong { font: 700 20px/1.3 "Baloo 2", "Hind", sans-serif; overflow-wrap: anywhere; }
+.dest code { font: 13px/1.5 "Hind", monospace; color: var(--muted); overflow-wrap: anywhere; }
+.go { display: block; text-align: center; text-decoration: none; background: var(--accent); color: var(--accent-fg); border-radius: 14px; padding: 14px; font-weight: 600; font-size: 18px; }
+.note { font-size: 13px; color: var(--muted); }
+.warn { background: var(--warn-bg); color: var(--warn-fg); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.mk { text-align: center; color: var(--accent); font-weight: 600; font-size: 15px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main class="card">
+  <img class="logo" src="icon-192.png" alt="QR साथी" width="56" height="56">
+  <h1>यह QR कोड QR साथी ऐप से बना है</h1>
+  <p class="by">बनाने वाला: <a href="https://www.instagram.com/rajan03jha/" target="_blank" rel="noopener noreferrer">Instagram @Rajan03jha</a></p>
+
+  <div class="dest" id="dest" hidden>
+    <small id="destLabel">यह QR आपको यहाँ ले जाएगा</small>
+    <strong id="destMain"></strong>
+    <code id="destFull"></code>
+  </div>
+  <div class="warn" id="idnWarn" hidden>इस पते में खास अक्षर हैं। खोलने से पहले पता ध्यान से देख लीजिए।</div>
+  <a class="go" id="goBtn" hidden rel="noopener noreferrer">आगे बढ़ें</a>
+  <div class="warn" id="bad" hidden>यह लिंक सही नहीं है या खोला नहीं जा सकता।</div>
+
+  <p class="note">खोलने से पहले ऊपर का पता देख लीजिए। जहाँ से QR मिला है, उस पर भरोसा न हो तो आगे मत बढ़िए।</p>
+  <a class="mk" href="./">अपना QR भी बनाइए, मुफ़्त</a>
+</main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var m = /^#u=(.+)$/.exec(location.hash || ''), raw = '', url = null;
+  try { raw = m ? decodeURIComponent(m[1]) : ''; } catch (e) { raw = ''; }
+  try { url = new URL(raw); } catch (e) { url = null; }
+  var okProto = url && ['http:', 'https:', 'tel:', 'mailto:'].indexOf(url.protocol) !== -1;
+  if (!okProto || raw.length > 2000) { $('bad').hidden = false; return; }
+
+  var main, label, btn;
+  if (url.protocol === 'tel:') {
+    main = decodeURIComponent(url.pathname); label = 'यह QR इस फ़ोन नंबर पर कॉल का विकल्प देगा'; btn = 'कॉल करें';
+  } else if (url.protocol === 'mailto:') {
+    main = decodeURIComponent(url.pathname); label = 'यह QR इस ईमेल पर संदेश लिखवाएगा'; btn = 'ईमेल लिखें';
+  } else {
+    main = url.hostname; label = 'यह QR आपको इस वेबसाइट पर ले जाएगा'; btn = 'आगे बढ़ें';
+    if (/(^|\.)xn--/i.test(url.hostname)) $('idnWarn').hidden = false;
+  }
+  $('destLabel').textContent = label;
+  $('destMain').textContent = main;
+  $('destFull').textContent = raw;
+  $('dest').hidden = false;
+  $('goBtn').textContent = btn;
+  $('goBtn').href = url.href;
+  $('goBtn').hidden = false;
+})();
+</script>
+</body>
+</html>
