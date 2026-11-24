@@ -29,6 +29,8 @@
   --l1: #0f766e; --l1-fg: #ffffff; --l1-soft: #e0f2ef;
   --l2: #c62828; --l2-fg: #ffffff; --l2-soft: #fdeaea;
   --l3: #6d28d9; --l3-fg: #ffffff; --l3-soft: #efe8fc;
+  --l4: #b45309; --l4-fg: #ffffff; --l4-soft: #fdf0dc;
+  --l5: #1d4ed8; --l5-fg: #ffffff; --l5-soft: #e3ecff;
   --accent: var(--l1); --accent-fg: var(--l1-fg); --accent-soft: var(--l1-soft);
   --warn-bg: #fff3cf; --warn-fg: #5f4300;
   --danger: #b3261e; --danger-bg: #fdecea;
@@ -42,6 +44,8 @@
     --l1: #2dd4bf; --l1-fg: #052b27; --l1-soft: #12332f;
     --l2: #ff8a80; --l2-fg: #3a0a08; --l2-soft: #3b1c1b;
     --l3: #b79bf7; --l3-fg: #1d0a3d; --l3-soft: #281c47;
+    --l4: #f6ad55; --l4-fg: #3a1d03; --l4-soft: #3a2810;
+    --l5: #8fb4ff; --l5-fg: #0a1b40; --l5-soft: #162a52;
     --warn-bg: #3a2e0e; --warn-fg: #f3d98a;
     --danger: #ff9a90; --danger-bg: #3a1a18;
   }
@@ -49,6 +53,8 @@
 body[data-level="1"] { --accent: var(--l1); --accent-fg: var(--l1-fg); --accent-soft: var(--l1-soft); }
 body[data-level="2"] { --accent: var(--l2); --accent-fg: var(--l2-fg); --accent-soft: var(--l2-soft); }
 body[data-level="3"] { --accent: var(--l3); --accent-fg: var(--l3-fg); --accent-soft: var(--l3-soft); }
+body[data-level="4"] { --accent: var(--l4); --accent-fg: var(--l4-fg); --accent-soft: var(--l4-soft); }
+body[data-level="5"] { --accent: var(--l5); --accent-fg: var(--l5-fg); --accent-soft: var(--l5-soft); }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -90,8 +96,9 @@ button, input, select, textarea { font-family: inherit; }
 .tags span { background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .2); border-radius: 999px; padding: 4px 12px; font-size: 13px; }
 
 /* level cards */
-.levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
-@media (max-width: 720px) { .levels { grid-template-columns: 1fr; } }
+.levels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+@media (max-width: 900px) { .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .levels { grid-template-columns: 1fr; } }
 .lvl {
   --c: var(--l1); --cs: var(--l1-soft); --cf: var(--l1-fg);
   display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px; border-radius: 16px;
@@ -100,6 +107,9 @@ button, input, select, textarea { font-family: inherit; }
 }
 .lvl.lv2 { --c: var(--l2); --cs: var(--l2-soft); --cf: var(--l2-fg); }
 .lvl.lv3 { --c: var(--l3); --cs: var(--l3-soft); --cf: var(--l3-fg); }
+.lvl.lv4 { --c: var(--l4); --cs: var(--l4-soft); --cf: var(--l4-fg); }
+.lvl.lv5 { --c: var(--l5); --cs: var(--l5-soft); --cf: var(--l5-fg); grid-column: 1 / -1; }
+.lvl.lv5 .lvnum svg { width: 28px; height: 28px; }
 .lvl:hover { transform: translateY(-2px); border-color: var(--c); }
 .lvl[aria-selected="true"] { border-color: var(--c); background: var(--cs); box-shadow: 0 8px 20px -10px var(--c); }
 .lvnum { flex: none; width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font: 800 23px var(--font-display); background: var(--c); color: var(--cf); }
@@ -221,12 +231,70 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 .ibtn.go { background: #fff; color: #0b1b2b; border-color: #fff; }
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 80; background: #0b1b2b; color: #fff; border-radius: 12px; padding: 11px 16px; font-size: 14px; max-width: min(92vw, 420px); text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); }
 
+/* level 4: logo sticker */
+.lgLayouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.lgOpt { position: relative; }
+.lgOpt input { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; }
+.lgOpt > span { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; height: 100%; padding: 12px 8px; border: 2px solid var(--line); border-radius: 14px; background: var(--field); font-weight: 600; font-size: 14px; line-height: 1.3; transition: border-color .15s, background .15s; }
+.lgOpt svg { width: 56px; height: 74px; color: var(--muted); }
+.lgOpt input:checked + span { border-color: var(--accent); background: var(--accent-soft); }
+.lgOpt input:checked + span svg { color: var(--accent); }
+.lgOpt input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* top banner: our apps, one at a time */
+.promo { position: sticky; top: 0; z-index: 40; background: var(--navy); color: #fff; padding-top: env(safe-area-inset-top, 0px); box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .55); }
+.promoRow { position: relative; height: 66px; overflow: hidden; }
+.pslide { position: absolute; inset: 0; display: flex; align-items: center; gap: 12px; color: #fff; text-decoration: none;
+  padding: 0 max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(100deg, var(--pc, #0f766e), var(--pc2, #0b1b2b));
+  visibility: hidden; opacity: 0; transform: translateY(100%); pointer-events: none; }
+.pslide.on { visibility: visible; opacity: 1; transform: none; pointer-events: auto; animation: pIn .24s ease-out; }
+.pslide.out { visibility: visible; opacity: 0; transform: translateY(-100%); animation: pOut .24s ease-in; }
+@keyframes pIn { from { transform: translateY(100%); opacity: .3; } to { transform: none; opacity: 1; } }
+@keyframes pOut { from { transform: none; opacity: 1; } to { transform: translateY(-100%); opacity: 0; } }
+.plogo { flex: none; width: 46px; height: 46px; border-radius: 13px; background: #fff; display: grid; place-items: center; overflow: hidden; color: #0b1b2b; font: 800 22px var(--font-display); box-shadow: 0 3px 10px rgba(0, 0, 0, .3); }
+.plogo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ptext { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.ptext strong { font: 700 17px var(--font-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ptext small { font-size: 13px; opacity: .92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pcta { flex: none; background: #fff; color: var(--pc, #0b1b2b); border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; box-shadow: 0 3px 10px rgba(0, 0, 0, .25); }
+.pbar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; display: flex; gap: 3px; padding: 0 max(14px, env(safe-area-inset-left, 0px)); pointer-events: none; }
+.pbar i { flex: 1; max-width: 26px; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .3); }
+.pbar i.on { background: #fff; }
+.has-promo .wrap { padding-top: 14px; }
+.has-promo .preview { top: calc(80px + env(safe-area-inset-top, 0px)); }
+
+/* level 5: QR scanner */
+.scanp { display: flex; flex-direction: column; gap: 12px; border-top: 5px solid var(--accent); margin-bottom: 18px; }
+.scanp h2 { font-size: 22px; }
+.scview { position: relative; width: 100%; max-width: 480px; aspect-ratio: 1; margin-inline: auto; border-radius: 18px; overflow: hidden; background: #000; }
+.scview video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scframe { position: absolute; inset: 15%; pointer-events: none; }
+.scframe i { position: absolute; width: 34px; height: 34px; border: 5px solid #fff; border-radius: 6px; }
+.scframe i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+.scframe i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+.scframe i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+.scframe i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+.scframe b { position: absolute; left: 6%; right: 6%; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .9); box-shadow: 0 0 12px rgba(255, 255, 255, .9); animation: scanline 2s ease-in-out infinite alternate; }
+@keyframes scanline { from { top: 4%; } to { top: 94%; } }
+.scresult { border: 1.5px solid var(--line); background: var(--field); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.scbadge { align-self: flex-start; background: var(--accent); color: var(--accent-fg); border-radius: 999px; padding: 3px 12px; font-weight: 700; font-size: 13px; }
+.schost { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.scresult pre { margin: 0; max-height: 260px; }
+.scresult .actions { margin-top: 0; }
+.scresult a.btn { text-align: center; text-decoration: none; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 </style>
 </head>
 <body data-level="1">
+
+<!-- ऊपर का बैनर: हमारे ऐप (एक बार में एक) -->
+<aside class="promo" id="promo" aria-label="हमारे दूसरे ऐप" hidden>
+  <div class="promoRow" id="promoRow"></div>
+</aside>
 
 <!-- ऐप इंस्टॉल का पॉपअप -->
 <div class="install" id="installBar" hidden>
@@ -259,10 +327,14 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     <p class="kicker">मुफ़्त QR स्टूडियो</p>
     <h1>अपना QR, अपने अंदाज़ में</h1>
     <p class="lead">लिंक, फ़ोन, लोकेशन या इमरजेंसी जानकारी डालिए। अपनी फ़ोटो के साथ पोस्टर बनाइए, सेव कीजिए और सीधे Instagram या WhatsApp पर भेजिए।</p>
-    <div class="tags"><span>हमेशा मुफ़्त</span><span>फ़ोटो के साथ</span><span>बाइक स्टिकर</span><span>ऐप की तरह इंस्टॉल</span></div>
+    <div class="tags"><span>हमेशा मुफ़्त</span><span>फ़ोटो के साथ</span><span>बाइक स्टिकर</span><span>QR स्कैनर</span><span>ऐप की तरह इंस्टॉल</span></div>
   </section>
 
   <div class="levels" role="tablist" aria-label="QR का लेवल">
+    <button class="lvl lv5" id="lv5" type="button" role="tab" aria-selected="false">
+      <span class="lvnum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M7 12h10"/></svg></span>
+      <span class="lvtext"><strong>QR स्कैन करें</strong><small>कैमरे से कोई भी QR कोड स्कैन कीजिए</small></span>
+    </button>
     <button class="lvl lv1" id="lv1" type="button" role="tab" aria-selected="true">
       <span class="lvnum">1</span>
       <span class="lvtext"><strong>लिंक का QR</strong><small>YouTube, वेबसाइट या ऐप का पोस्टर</small></span>
@@ -275,7 +347,34 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       <span class="lvnum">3</span>
       <span class="lvtext"><strong>फ़ोटो वाला QR</strong><small>अपनी फ़ोटो के साथ, कुछ भी डालिए</small></span>
     </button>
+    <button class="lvl lv4" id="lv4" type="button" role="tab" aria-selected="false">
+      <span class="lvnum">4</span>
+      <span class="lvtext"><strong>लोगो स्टिकर</strong><small>बीच में अपना या किसी भी चीज़ का लोगो</small></span>
+    </button>
   </div>
+
+  <section class="panel scanp" id="scanPanel" aria-label="QR स्कैनर" hidden>
+    <h2>QR स्कैन करें</h2>
+    <p class="help">कैमरे से कोई भी QR कोड स्कैन कीजिए। स्कैन आपके फ़ोन में ही होता है, कोई फ़ोटो कहीं नहीं जाती। लिंक अपने आप नहीं खुलेगा, पहले आपको दिखेगा।</p>
+    <div class="scview" id="scView" hidden>
+      <video id="scVideo" playsinline muted></video>
+      <div class="scframe" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+    </div>
+    <p class="help" id="scMsg" role="status">कैमरा चालू करके QR को चौकोर फ्रेम के अंदर लाइए।</p>
+    <div class="actions">
+      <button class="btn" id="scStart" type="button">कैमरा चालू करके स्कैन करें</button>
+      <button class="btn alt" id="scStop" type="button" hidden>कैमरा बंद करें</button>
+      <button class="btn alt" id="scTorch" type="button" hidden>टॉर्च</button>
+      <button class="btn alt" id="scGal" type="button">गैलरी से QR फ़ोटो चुनें</button>
+    </div>
+    <input type="file" id="scPick" accept="image/*" hidden>
+    <div class="scresult" id="scResult" hidden>
+      <span class="scbadge" id="scKind"></span>
+      <p class="schost" id="scHost" hidden></p>
+      <pre id="scText"></pre>
+      <div class="actions" id="scActs"></div>
+    </div>
+  </section>
 
   <div class="layout">
     <section class="panel main stack" aria-label="जानकारी भरें">
@@ -285,7 +384,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
         <div id="linkSample" class="box warn" hidden>उदाहरण लिंक भरा है। अपना लिंक डालिए।</div>
         <div class="field">
           <label class="lab" for="linkUrl">लिंक</label>
-          <input type="text" id="linkUrl" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" value="https://example.com/mera-link" placeholder="https://youtube.com/@aapkachannel">
+          <input type="text" id="linkUrl" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://youtube.com/@aapkachannel">
           <p class="help">YouTube, Instagram, WhatsApp, ऐप स्टोर या कोई भी वेबसाइट का लिंक।</p>
         </div>
         <div class="field">
@@ -317,30 +416,30 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
         <div class="row">
           <div class="field">
             <label class="lab" for="eName">आपका नाम</label>
-            <input type="text" id="eName" autocomplete="off" value="राजन कुमार">
+            <input type="text" id="eName" autocomplete="off" placeholder="आपका पूरा नाम">
           </div>
           <div class="field">
             <label class="lab" for="eBlood">ब्लड ग्रुप</label>
             <select id="eBlood">
               <option value="">न दिखाएँ</option>
-              <option>A+</option><option>A-</option><option>B+</option><option selected>B-</option>
+              <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
               <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
             </select>
           </div>
         </div>
         <div class="field">
           <label class="lab" for="ePhone">आपका फ़ोन नंबर</label>
-          <input type="tel" id="ePhone" autocomplete="off" value="+91 90000 00000">
+          <input type="tel" id="ePhone" autocomplete="off" placeholder="+91 98765 43210">
           <p class="help">देश कोड के साथ लिखिए, जैसे +91। इससे स्कैन करने वाला सीधे कॉल कर सकता है।</p>
         </div>
         <div class="row">
           <div class="field">
             <label class="lab" for="eF1n">घरवाले का नाम</label>
-            <input type="text" id="eF1n" autocomplete="off" value="पिताजी">
+            <input type="text" id="eF1n" autocomplete="off" placeholder="जैसे: पिताजी">
           </div>
           <div class="field">
             <label class="lab" for="eF1p">उनका नंबर</label>
-            <input type="tel" id="eF1p" autocomplete="off" value="+91 90000 00001">
+            <input type="tel" id="eF1p" autocomplete="off" placeholder="+91 98765 43210">
           </div>
           <div class="field">
             <label class="lab" for="eF2n">दूसरे घरवाले का नाम</label>
@@ -353,11 +452,11 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
         </div>
         <div class="field">
           <label class="lab" for="eAddr">घर का पता</label>
-          <textarea id="eAddr" autocomplete="off">मकान नंबर 12, गांधी नगर</textarea>
+          <textarea id="eAddr" autocomplete="off" placeholder="मकान नंबर, मोहल्ला"></textarea>
         </div>
         <div class="field">
           <label class="lab" for="eCity">शहर और राज्य</label>
-          <input type="text" id="eCity" autocomplete="off" value="पटना, बिहार">
+          <input type="text" id="eCity" autocomplete="off" placeholder="जैसे: पटना, बिहार">
         </div>
         <div class="field">
           <label class="lab" for="eMap">Google Maps लोकेशन लिंक (वैकल्पिक)</label>
@@ -444,7 +543,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 
           <div class="field ctpane" id="ct_url">
             <label class="lab" for="p3Url">लिंक</label>
-            <input type="text" id="p3Url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" value="https://example.com/mera-link" placeholder="https://instagram.com/aapkaid">
+            <input type="text" id="p3Url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://instagram.com/aapkaid">
           </div>
           <div class="field ctpane" id="ct_phone" hidden>
             <label class="lab" for="p3Phone">फ़ोन नंबर</label>
@@ -504,7 +603,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
           <h3>3. पोस्टर पर क्या लिखें</h3>
           <div class="field">
             <label class="lab" for="p3Head">बड़ा टेक्स्ट</label>
-            <input type="text" id="p3Head" maxlength="50" value="मुझसे जुड़ें">
+            <input type="text" id="p3Head" maxlength="50" placeholder="जैसे: मुझसे जुड़ें">
           </div>
           <div class="field">
             <label class="lab" for="p3Sub">छोटी लाइन (वैकल्पिक)</label>
@@ -512,7 +611,95 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
           </div>
           <div class="field">
             <label class="lab" for="p3Scan">स्कैन वाली पट्टी</label>
-            <input type="text" id="p3Scan" maxlength="40" value="QR कोड को स्कैन कीजिए">
+            <input type="text" id="p3Scan" maxlength="40" placeholder="जैसे: QR कोड को स्कैन कीजिए">
+          </div>
+        </div>
+      </div>
+
+      <!-- लेवल 4 -->
+      <div id="pane4" class="stack pane" role="tabpanel" hidden>
+        <div id="p4Hint" class="box warn" hidden></div>
+
+        <div class="stack">
+          <h3>1. स्टिकर का ढंग</h3>
+          <div class="lgLayouts" role="radiogroup" aria-label="स्टिकर का ढंग">
+            <label class="lgOpt"><input type="radio" name="lgLayout" value="top" checked><span>
+              <svg viewBox="0 0 60 80" aria-hidden="true" fill="currentColor"><rect x="19" y="4" width="22" height="22" rx="6"/><rect x="14" y="31" width="32" height="5" rx="2.5" opacity=".6"/><rect x="12" y="42" width="36" height="34" rx="4" opacity=".3"/><path d="M16 46h9v9h-9zM35 46h9v9h-9zM16 63h9v9h-9z"/></svg>
+              लोगो, फिर नाम, फिर QR</span></label>
+            <label class="lgOpt"><input type="radio" name="lgLayout" value="mid"><span>
+              <svg viewBox="0 0 60 80" aria-hidden="true" fill="currentColor"><rect x="14" y="6" width="32" height="5" rx="2.5" opacity=".6"/><rect x="8" y="18" width="44" height="46" rx="5" opacity=".3"/><path d="M13 23h10v10H13zM37 23h10v10H37zM13 49h10v10H13z"/><rect x="23" y="34" width="14" height="14" rx="4" style="stroke:var(--field);stroke-width:2.5"/></svg>
+              ऊपर नाम, QR के बीच में लोगो</span></label>
+            <label class="lgOpt"><input type="radio" name="lgLayout" value="qr"><span>
+              <svg viewBox="0 0 60 80" aria-hidden="true" fill="currentColor"><rect x="8" y="17" width="44" height="46" rx="5" opacity=".3"/><path d="M13 22h10v10H13zM37 22h10v10H37zM13 48h10v10H13z"/><rect x="23" y="33" width="14" height="14" rx="4" style="stroke:var(--field);stroke-width:2.5"/></svg>
+              सिर्फ़ QR, बीच में लोगो</span></label>
+          </div>
+        </div>
+
+        <div class="stack sec">
+          <h3>2. लोगो</h3>
+          <div class="photoRow">
+            <canvas id="lgThumb" class="thumb" style="border-radius:14px" width="96" height="96" hidden></canvas>
+            <div class="photoBtns">
+              <button class="btn alt small" id="lgGal" type="button">अपना लोगो अपलोड करें</button>
+              <button class="linkbtn" id="lgClear" type="button" hidden>लोगो हटाएँ</button>
+            </div>
+          </div>
+          <input type="file" id="lgPick" accept="image/*" hidden>
+          <p class="help" id="lgMsg">लोगो आपके फ़ोन में ही रहता है, कहीं अपलोड नहीं होता। अपलोड किया लोगो आइकन से ऊपर रहेगा।</p>
+          <div class="field">
+            <span class="lab" id="lgIconLab">या कोई सादा आइकन चुनिए</span>
+            <div class="chips" role="radiogroup" aria-labelledby="lgIconLab">
+              <label class="chip"><input type="radio" name="lgIcon" value="none" checked><span>कोई नहीं</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="play"><span>वीडियो</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="chat"><span>चैट</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="camera"><span>कैमरा</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="phone"><span>फ़ोन</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="pin"><span>लोकेशन</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="link"><span>लिंक</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="sos"><span>SOS</span></label>
+              <label class="chip"><input type="radio" name="lgIcon" value="star"><span>तारा</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lab" id="lgIcLab">आइकन का रंग</span>
+            <div class="colorline"><input type="color" id="lgIconColor" aria-labelledby="lgIcLab" value="#c62828"></div>
+          </div>
+        </div>
+
+        <div class="stack sec">
+          <h3>3. QR में क्या डालें</h3>
+          <div class="field">
+            <label class="lab" for="lgType">जानकारी का प्रकार</label>
+            <select id="lgType">
+              <option value="url" selected>लिंक</option>
+              <option value="phone">फ़ोन नंबर</option>
+              <option value="wa">WhatsApp</option>
+              <option value="text">टेक्स्ट</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lab" for="lgVal">जानकारी</label>
+            <input type="text" id="lgVal" autocomplete="off" autocapitalize="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="stack sec">
+          <h3>4. स्टिकर पर क्या लिखें</h3>
+          <div class="field">
+            <label class="lab" for="lgName">नाम या यूज़र नेम</label>
+            <input type="text" id="lgName" maxlength="40" autocomplete="off" placeholder="@aapka_username">
+          </div>
+          <div class="field">
+            <label class="lab" for="lgSub">छोटी लाइन (वैकल्पिक)</label>
+            <input type="text" id="lgSub" maxlength="70" autocomplete="off" placeholder="जैसे: चैनल देखिए और सब्सक्राइब कीजिए">
+          </div>
+          <div class="field">
+            <label class="lab" for="lgScan">स्कैन वाली पट्टी (वैकल्पिक)</label>
+            <input type="text" id="lgScan" maxlength="40" autocomplete="off" placeholder="जैसे: QR कोड को स्कैन कीजिए">
+          </div>
+          <div class="field">
+            <span class="lab" id="lgBgLab">स्टिकर का रंग</span>
+            <div class="colorline"><input type="color" id="lgBg" aria-labelledby="lgBgLab" value="#101c26"><span id="lgSwatches" class="colorline"></span></div>
           </div>
         </div>
       </div>
@@ -659,8 +846,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   };
   var SWATCH = ['#0b1a24', '#b3121a', '#0f766e', '#1d4ed8', '#6d28d9', '#b45309'];
   var tab = '1';
-  var dots = { '1': TPL.video.dot, '2': TPL.sos.dot, '3': '#3b1a7a' };
-  var cur = null, photo = null;
+  var dots = { '1': TPL.video.dot, '2': TPL.sos.dot, '3': '#3b1a7a', '4': '#0b1a24' };
+  var cur = null, photo = null, lgLogo = null;
   var cv = $('cv');
 
   if (typeof qrcode !== 'undefined' && qrcode.stringToBytesFuncs && qrcode.stringToBytesFuncs['UTF-8']) {
@@ -794,8 +981,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     return '';
   }
 
-  function makeQR(text) {
-    var levels = ['M', 'L'];
+  function makeQR(text, lv) {
+    var levels = lv || ['M', 'L'];
     for (var i = 0; i < levels.length; i++) {
       try {
         var q = qrcode(0, levels[i]);
@@ -817,7 +1004,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     c.arcTo(x, y, x + w, y, r);
     c.closePath();
   }
-  function drawQR(c, x, y, size, q, shape, fg, bg, rad) {
+  function drawQR(c, x, y, size, q, shape, fg, bg, rad, hole) {
     var n = q.getModuleCount(), pad = 4, cell = size / (n + pad * 2);
     c.fillStyle = bg;
     rr(c, x, y, size, size, rad);
@@ -826,6 +1013,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     for (var r = 0; r < n; r++) {
       for (var k = 0; k < n; k++) {
         if (!q.isDark(r, k)) continue;
+        if (hole && r >= hole.a && r < hole.b && k >= hole.a && k < hole.b) continue;
         var px = x + (k + pad) * cell, py = y + (r + pad) * cell;
         var finder = (r < 7 && k < 7) || (r < 7 && k >= n - 7) || (r >= n - 7 && k < 7);
         if (shape === 'square') {
@@ -894,7 +1082,9 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     canvas.width = W; canvas.height = H;
     var c = canvas.getContext('2d');
     c.clearRect(0, 0, W, H);
-    drawQR(c, 0, 0, 1080, q, m.shape, m.fg, m.bg, 0);
+    var hole = m.logoOn ? logoHole(q, m.lvl) : null;
+    drawQR(c, 0, 0, 1080, q, m.shape, m.fg, m.bg, 0, hole);
+    if (hole) paintCenterLogo(c, 0, 0, 1080, q, m, hole);
     c.fillStyle = m.bg; c.fillRect(0, 1080, W, 84);
     c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.font = '500 30px ' + BODYFAM;
     c.fillStyle = lum(m.bg) > 0.5 ? 'rgba(20,30,40,0.7)' : 'rgba(255,255,255,0.8)';
@@ -995,7 +1185,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     var subLines = o.sub ? wrap(c, o.sub, 880) : [];
     if (subLines.length > 2) subLines.length = 2;
     var subLH = 54, subH = subLines.length * subLH;
-    var pillH = 76, gap = 36, D = bgMode ? 0 : 340;
+    var pillH = o.scan ? 76 : 0, gap = 36, D = bgMode ? 0 : 340;
     var fixed = bgMode
       ? headH + gap + pillH + 28 + (subLines.length ? gap + subH : 0)
       : D + 30 + headH + (subLines.length ? 12 + subH : 0) + gap + pillH + 28;
@@ -1023,6 +1213,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       y += tile;
     }
     function drawPill() {
+      if (!o.scan) return;
       c.font = '600 36px ' + BODYFAM;
       var pw = Math.min(c.measureText(o.scan).width + 90, W - 80);
       c.fillStyle = 'rgba(255,255,255,0.96)';
@@ -1057,6 +1248,161 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     watermark(c, W, H);
   }
 
+  /* ---------- लेवल 4: लोगो स्टिकर ---------- */
+  function shade(hex, k) {
+    var n = parseInt(hex.slice(1), 16);
+    function f(v) { return Math.round(v * (1 - k)); }
+    return 'rgb(' + f(n >> 16 & 255) + ',' + f(n >> 8 & 255) + ',' + f(n & 255) + ')';
+  }
+  function lgIcon() { var e = document.querySelector('input[name="lgIcon"]:checked'); return e ? e.value : 'none'; }
+  function lgLayout() { var e = document.querySelector('input[name="lgLayout"]:checked'); return e ? e.value : 'top'; }
+  function hasLogo4(m) { return !!lgLogo || m.l4.icon !== 'none'; }
+
+  // सादे आइकन: सब अपने बनाए हुए, किसी कंपनी का निशान नहीं
+  function drawGlyph(c, kind, cx, cy, s, col) {
+    var u = s / 100;
+    function P(x, y) { return [cx + x * u, cy + y * u]; }
+    c.save();
+    c.fillStyle = col; c.beginPath(); c.arc(cx, cy, s / 2, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#ffffff'; c.strokeStyle = '#ffffff'; c.lineJoin = 'round'; c.lineCap = 'round';
+    if (kind === 'play') {
+      var a = P(-14, -26), b = P(-14, 26), d = P(28, 0);
+      c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.lineTo(d[0], d[1]); c.closePath();
+      c.lineWidth = 8 * u; c.fill(); c.stroke();
+    } else if (kind === 'chat') {
+      rr(c, cx - 28 * u, cy - 24 * u, 56 * u, 40 * u, 12 * u); c.fill();
+      var t1 = P(-16, 14), t2 = P(-20, 30), t3 = P(0, 14);
+      c.beginPath(); c.moveTo(t1[0], t1[1]); c.lineTo(t2[0], t2[1]); c.lineTo(t3[0], t3[1]); c.closePath(); c.fill();
+      c.fillStyle = col;
+      [-14, 0, 14].forEach(function (dx) { c.beginPath(); c.arc(cx + dx * u, cy - 4 * u, 4.2 * u, 0, Math.PI * 2); c.fill(); });
+    } else if (kind === 'camera') {
+      rr(c, cx - 30 * u, cy - 14 * u, 60 * u, 40 * u, 8 * u); c.fill();
+      rr(c, cx - 12 * u, cy - 25 * u, 24 * u, 14 * u, 4 * u); c.fill();
+      c.fillStyle = col; c.beginPath(); c.arc(cx, cy + 6 * u, 12.5 * u, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(cx, cy + 6 * u, 6.5 * u, 0, Math.PI * 2); c.fill();
+    } else if (kind === 'phone') {
+      rr(c, cx - 16 * u, cy - 31 * u, 32 * u, 62 * u, 7 * u); c.fill();
+      c.fillStyle = col; rr(c, cx - 12 * u, cy - 25 * u, 24 * u, 42 * u, 2 * u); c.fill();
+      c.beginPath(); c.arc(cx, cy + 24 * u, 2.8 * u, 0, Math.PI * 2); c.fill();
+    } else if (kind === 'pin') {
+      c.beginPath(); c.arc(cx, cy - 8 * u, 20 * u, 0, Math.PI * 2); c.fill();
+      var q1 = P(-17.5, 3), q2 = P(17.5, 3), q3 = P(0, 32);
+      c.beginPath(); c.moveTo(q1[0], q1[1]); c.lineTo(q3[0], q3[1]); c.lineTo(q2[0], q2[1]); c.closePath(); c.fill();
+      c.fillStyle = col; c.beginPath(); c.arc(cx, cy - 8 * u, 8 * u, 0, Math.PI * 2); c.fill();
+    } else if (kind === 'link') {
+      c.lineWidth = 7 * u; c.save(); c.translate(cx, cy); c.rotate(-Math.PI / 4);
+      rr(c, -34 * u, -10 * u, 40 * u, 20 * u, 10 * u); c.stroke();
+      rr(c, -6 * u, -10 * u, 40 * u, 20 * u, 10 * u); c.stroke();
+      c.restore();
+    } else if (kind === 'sos') {
+      c.font = '800 ' + (34 * u) + 'px ' + HEADFAM; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.fillText('SOS', cx, cy + 2 * u);
+    } else if (kind === 'star') {
+      c.beginPath();
+      for (var i = 0; i < 10; i++) {
+        var rad = i % 2 ? 13 * u : 32 * u, ang = -Math.PI / 2 + i * Math.PI / 5;
+        var px = cx + Math.cos(ang) * rad, py = cy + 2 * u + Math.sin(ang) * rad;
+        if (i) c.lineTo(px, py); else c.moveTo(px, py);
+      }
+      c.closePath(); c.lineWidth = 5 * u; c.fill(); c.stroke();
+    }
+    c.restore();
+  }
+  // x, y = ऊपर-बायाँ कोना, size = वर्ग की भुजा
+  function drawLogoMark(c, x, y, size, m, backFill, radius) {
+    c.save();
+    c.fillStyle = backFill; rr(c, x, y, size, size, radius); c.fill();
+    c.restore();
+    var inner = size * 0.8;
+    if (lgLogo) {
+      var s = Math.min(inner / lgLogo.width, inner / lgLogo.height), w = lgLogo.width * s, h = lgLogo.height * s;
+      c.drawImage(lgLogo, x + (size - w) / 2, y + (size - h) / 2, w, h);
+    } else if (m.l4.icon !== 'none') {
+      drawGlyph(c, m.l4.icon, x + size / 2, y + size / 2, inner, m.l4.iconColor);
+    }
+  }
+  // QR के बीच की जगह (मॉड्यूल में). QR का मज़बूत मोड हो तो ही बड़ी जगह छोड़ते हैं।
+  function logoHole(q, lvl) {
+    var n = q.getModuleCount(), f = { H: 0.24, Q: 0.18, M: 0.12 }[lvl] || 0.12;
+    var cnt = Math.round(n * f);
+    if (cnt % 2 === 0) cnt -= 1;
+    if (cnt < 3) cnt = 3;
+    var a = (n - cnt) / 2;
+    return { a: a, b: a + cnt, n: cnt };
+  }
+  function paintCenterLogo(c, x, y, size, q, m, hole) {
+    var cell = size / (q.getModuleCount() + 8);
+    var bx = x + (4 + hole.a) * cell, by = y + (4 + hole.a) * cell, bs = hole.n * cell;
+    drawLogoMark(c, bx, by, bs, m, m.bg, bs * 0.2);
+  }
+  function drawLogoSticker(canvas, q, m) {
+    var o = m.l4, W = 1080, H = 1350;
+    canvas.width = W; canvas.height = H;
+    var c = canvas.getContext('2d');
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    var top = o.layout === 'top', hasL = hasLogo4(m);
+    var dark = lum(o.bg) < 0.4, ink = dark ? '#ffffff' : '#101c26';
+    var g = c.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, o.bg); g.addColorStop(1, dark ? shade(o.bg, 0.55) : shade(o.bg, 0.1));
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+    c.globalAlpha = 0.07; c.fillStyle = ink;
+    c.beginPath(); c.arc(W - 30, 140, 270, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(20, H - 260, 220, 0, Math.PI * 2); c.fill();
+    c.globalAlpha = 1;
+
+    var hs = fitText(c, o.name, 900, top ? 84 : 92, 44, 2, '800');
+    var hlh = hs.size * 1.15, headH = o.name ? hs.lines.length * hlh : 0;
+    c.font = '500 40px ' + BODYFAM;
+    var subLines = o.sub ? wrap(c, o.sub, 880) : [];
+    if (subLines.length > 2) subLines.length = 2;
+    var subLH = 54, subH = subLines.length * subLH;
+    var pillH = o.scan ? 76 : 0, gap = 36;
+    var L = top && hasL ? 300 : 0;
+    var fixed = (L ? L + 34 : 0) + headH + (subLines.length ? 12 + subH : 0) + (headH || subH ? gap : 0) + (pillH ? 28 + pillH : 0);
+    var tile = Math.max(360, Math.min(top ? 560 : 700, H - 170 - fixed));
+    var y = 50 + Math.max(0, (H - 170 - (fixed + tile)) / 2);
+    var tx = (W - tile) / 2;
+
+    if (L) {
+      c.save(); c.shadowColor = 'rgba(0,0,0,0.35)'; c.shadowBlur = 30; c.shadowOffsetY = 12;
+      c.fillStyle = '#ffffff'; rr(c, (W - L) / 2, y, L, L, L * 0.22); c.fill();
+      c.restore();
+      drawLogoMark(c, (W - L) / 2, y, L, m, '#ffffff', L * 0.22);
+      y += L + 34;
+    }
+    if (headH) {
+      c.font = '800 ' + hs.size + 'px ' + HEADFAM; c.fillStyle = ink;
+      hs.lines.forEach(function (l, i) { c.fillText(l, W / 2, y + hlh * (i + 0.8)); });
+      y += headH;
+    }
+    if (subLines.length) {
+      y += 12; c.font = '500 40px ' + BODYFAM; c.fillStyle = ink;
+      subLines.forEach(function (l, i) { c.fillText(l, W / 2, y + subLH * (i + 0.75)); });
+      y += subH;
+    }
+    if (headH || subH) y += gap;
+
+    c.save();
+    c.shadowColor = 'rgba(0,0,0,0.35)'; c.shadowBlur = 40; c.shadowOffsetY = 16;
+    c.fillStyle = m.bg; rr(c, tx, y, tile, tile, tile * 0.045); c.fill();
+    c.restore();
+    var hole = m.logoOn ? logoHole(q, m.lvl) : null;
+    drawQR(c, tx, y, tile, q, m.shape, m.fg, m.bg, tile * 0.045, hole);
+    if (hole) paintCenterLogo(c, tx, y, tile, q, m, hole);
+    y += tile;
+
+    if (pillH) {
+      y += 28;
+      c.font = '600 36px ' + BODYFAM;
+      var pw = Math.min(c.measureText(o.scan).width + 90, W - 80);
+      c.fillStyle = dark ? 'rgba(255,255,255,0.96)' : '#101c26';
+      rr(c, (W - pw) / 2, y, pw, pillH, pillH / 2); c.fill();
+      c.fillStyle = dark ? '#101c26' : '#ffffff';
+      c.fillText(o.scan, W / 2, y + pillH / 2 + 12);
+    }
+    watermark(c, W, H);
+  }
+
   /* ---------- मॉडल और रेंडर ---------- */
   function build() {
     var shape = $('shape').value, fg = $('dotColor').value, bg = $('bgColor').value;
@@ -1080,9 +1426,22 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       return { kind: 'poster', payload: (name || val('ePhone')) ? emergencyPayload() : '', th: th2, poster: !!th2, shape: shape, fg: fg, bg: bg,
         file: 'qr-saathi-emergency-sticker.png', empty: 'कम से कम अपना नाम या फ़ोन नंबर डालिए।' };
     }
+    if (tab === '4') {
+      var lt = $('lgType').value, lv = val('lgVal'), pl = '';
+      if (lv) {
+        if (lt === 'url') pl = finalize(normUrl(lv));
+        else if (lt === 'phone') { var ph = normPhone(lv); pl = ph ? finalize('tel:' + ph) : ''; }
+        else if (lt === 'wa') { var wd = normPhone(lv).replace(/\D/g, ''); pl = wd ? finalize('https://wa.me/' + wd) : ''; }
+        else pl = finalize(lv);
+      }
+      var lay = lgLayout();
+      return { kind: 'logo', payload: pl, poster: lay !== 'qr', shape: shape, fg: fg, bg: bg, file: 'qr-saathi-logo-sticker.png',
+        empty: 'ऊपर QR में डालने वाली जानकारी भरिए।',
+        l4: { layout: lay, name: val('lgName'), sub: val('lgSub'), scan: val('lgScan'), bg: $('lgBg').value, icon: lgIcon(), iconColor: $('lgIconColor').value } };
+    }
     return { kind: 'photo', payload: p3Payload(), poster: true, shape: shape, fg: fg, bg: bg, file: 'qr-saathi-photo-qr.png',
       empty: 'ऊपर चुने हुए प्रकार की जानकारी भरिए।',
-      p3: { head: val('p3Head'), sub: val('p3Sub'), scan: val('p3Scan') || 'QR कोड को स्कैन कीजिए', layout: $('p3Layout').value, ov: $('ovType').value, amt: +$('ovAmt').value } };
+      p3: { head: val('p3Head'), sub: val('p3Sub'), scan: val('p3Scan'), layout: $('p3Layout').value, ov: $('ovType').value, amt: +$('ovAmt').value } };
   }
   function showError(t) {
     $('errBox').textContent = t; $('errBox').hidden = false;
@@ -1091,6 +1450,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     cur = null;
   }
   function render() {
+    if (tab === '5') return;
     $('linkSample').hidden = !(tab === '1' && $('linkUrl').value.trim() === SAMPLE_URL);
     $('sosSample').hidden = !(tab === '2' && $('ePhone').value.trim() === SAMPLE_PHONE);
     $('ovOut').textContent = $('ovAmt').value;
@@ -1102,14 +1462,24 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       if (ctype() === 'url' && val('p3Url') === SAMPLE_URL) hints.push('उदाहरण लिंक भरा है, अपना डालिए।');
       $('p3Hint').textContent = hints.join(' '); $('p3Hint').hidden = !hints.length;
     }
+    if (tab === '4') {
+      var h4 = [];
+      if (!lgLogo && lgIcon() === 'none') h4.push('अभी कोई लोगो नहीं है। ऊपर से अपना लोगो अपलोड कीजिए या कोई आइकन चुनिए।');
+      $('p4Hint').textContent = h4.join(' '); $('p4Hint').hidden = !h4.length;
+    }
     var m = build();
     if (typeof qrcode === 'undefined') { showError('QR बनाने वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर पेज रीफ्रेश कीजिए।'); return; }
     if (!m.payload) { showError(m.empty); return; }
-    var res = makeQR(m.payload);
+    var wantCenter = m.kind === 'logo' && m.l4.layout !== 'top' && (!!lgLogo || m.l4.icon !== 'none');
+    var res = wantCenter ? makeQR(m.payload, ['H', 'Q', 'M']) : null, noLogo = false;
+    if (!res) { res = makeQR(m.payload); noLogo = wantCenter; }
     if (!res) { showError('जानकारी QR के लिए बहुत ज़्यादा है। टेक्स्ट छोटा कीजिए।'); return; }
+    m.lvl = res.lvl; m.logoOn = wantCenter && !noLogo;
+    if (noLogo) { $('p4Hint').textContent = 'जानकारी बहुत ज़्यादा है, इसलिए बीच में लोगो नहीं लग सका। जानकारी छोटी कीजिए।'; $('p4Hint').hidden = false; }
 
     $('errBox').hidden = true; cv.hidden = false;
     if (m.kind === 'photo') drawPhotoPoster(cv, res.q, m);
+    else if (m.kind === 'logo' && m.poster) drawLogoSticker(cv, res.q, m);
     else if (m.th) drawPoster(cv, res.q, m.th, m);
     else drawPlain(cv, res.q, m);
 
@@ -1120,6 +1490,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     if (ver > 14) meta += ' · जानकारी छोटी करें, तभी छोटे स्टिकर पर स्कैन होगा';
     var base = siteBase();
     if (base && m.payload.indexOf(base + 'go.html#u=') === 0) meta += ' · स्कैन करने पर पहले "QR साथी से बना" पेज खुलेगा, फिर आपका लिंक';
+    if (m.kind === 'logo' && m.logoOn) meta += ' · बीच में लोगो के लिए QR मज़बूत मोड (' + res.lvl + ') में बना है';
     $('meta').textContent = meta;
     $('payloadView').textContent = m.payload;
 
@@ -1128,7 +1499,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     else if (cr < 4) warn = 'रंग आपस में बहुत मिलते हैं। स्कैन आसान रखने के लिए बिंदु और गहरे या बैकग्राउंड और हल्का कीजिए।';
     $('styleWarn').textContent = warn; $('styleWarn').hidden = !warn;
 
-    $('btnMain').textContent = m.kind === 'photo' ? 'फ़ोटो पोस्टर सेव / शेयर करें' : (m.th ? (tab === '2' ? 'स्टिकर सेव / शेयर करें' : 'पोस्टर सेव / शेयर करें') : 'QR सेव / शेयर करें');
+    $('btnMain').textContent = m.kind === 'photo' ? 'फ़ोटो पोस्टर सेव / शेयर करें' : m.kind === 'logo' ? (m.poster ? 'स्टिकर सेव / शेयर करें' : 'QR सेव / शेयर करें') : (m.th ? (tab === '2' ? 'स्टिकर सेव / शेयर करें' : 'पोस्टर सेव / शेयर करें') : 'QR सेव / शेयर करें');
     $('btnMain').disabled = false;
     $('btnQR').hidden = !m.poster;
     $('btnQR').disabled = false;
@@ -1329,6 +1700,248 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   $('photoShoot').addEventListener('click', function () { $('photoCam').click(); });
   $('photoClear').addEventListener('click', function () { photo = null; updateThumb(); photoMsg(''); requestRender(); });
 
+  /* ---------- लोगो अपलोड (लेवल 4) ---------- */
+  function lgMsg(t) { $('lgMsg').textContent = t || 'लोगो आपके फ़ोन में ही रहता है, कहीं अपलोड नहीं होता। अपलोड किया लोगो आइकन से ऊपर रहेगा।'; }
+  function updateLgThumb() {
+    var t = $('lgThumb');
+    if (!lgLogo) { t.hidden = true; $('lgClear').hidden = true; return; }
+    var c = t.getContext('2d');
+    c.clearRect(0, 0, t.width, t.height);
+    c.fillStyle = '#ffffff'; c.fillRect(0, 0, t.width, t.height);
+    var s = Math.min(t.width * 0.84 / lgLogo.width, t.height * 0.84 / lgLogo.height), w = lgLogo.width * s, h = lgLogo.height * s;
+    c.drawImage(lgLogo, (t.width - w) / 2, (t.height - h) / 2, w, h);
+    t.hidden = false; $('lgClear').hidden = false;
+  }
+  function loadLogo(file) {
+    if (!file) return;
+    if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|svg|heic|heif|gif|bmp)$/i.test(file.name)) { lgMsg('यह फ़ाइल फ़ोटो नहीं लगती। दूसरी चुनिए।'); return; }
+    if (file.size > 20 * 1024 * 1024) { lgMsg('फ़ाइल बहुत बड़ी है। 20 MB से छोटी चुनिए।'); return; }
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var iw = img.naturalWidth || 512, ih = img.naturalHeight || 512;
+      var k = Math.min(1, 700 / Math.max(iw, ih));
+      var cnv = document.createElement('canvas');
+      cnv.width = Math.max(1, Math.round(iw * k)); cnv.height = Math.max(1, Math.round(ih * k));
+      cnv.getContext('2d').drawImage(img, 0, 0, cnv.width, cnv.height);
+      URL.revokeObjectURL(url);
+      lgLogo = cnv; updateLgThumb(); lgMsg(''); requestRender();
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); lgMsg('यह फ़ाइल खुल नहीं पाई। दूसरी चुनिए।'); };
+    img.src = url;
+  }
+  $('lgGal').addEventListener('click', function () { $('lgPick').click(); });
+  $('lgPick').addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; loadLogo(f); });
+  $('lgClear').addEventListener('click', function () { lgLogo = null; updateLgThumb(); lgMsg(''); requestRender(); });
+  var LG_PH = { url: ['https://youtube.com/@aapkachannel', 'url'], phone: ['+91 98765 43210', 'tel'], wa: ['+91 98765 43210', 'tel'], text: ['जो भी स्कैन करने वाले को दिखाना है', 'text'] };
+  function lgTypeUi() { var p = LG_PH[$('lgType').value]; $('lgVal').placeholder = p[0]; $('lgVal').setAttribute('inputmode', p[1]); }
+  $('lgType').addEventListener('change', function () { $('lgVal').value = ''; lgTypeUi(); render(); });
+  ['#101c26', '#b3121a', '#0f766e', '#1d4ed8', '#6d28d9', '#b45309', '#ffffff'].forEach(function (col) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'sw'; b.style.background = col;
+    b.setAttribute('aria-label', 'स्टिकर का रंग ' + col);
+    b.addEventListener('click', function () { $('lgBg').value = col; render(); });
+    $('lgSwatches').appendChild(b);
+  });
+  ['lgLayout', 'lgIcon'].forEach(function (nm) {
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="' + nm + '"]'), function (r) { r.addEventListener('change', requestRender); });
+  });
+
+  /* ---------- लेवल 5: QR स्कैनर ---------- */
+  // फ़ोन का अपना स्कैनर (BarcodeDetector) हो तो वही, वरना jsQR पहली बार ज़रूरत पड़ने पर लोड होता है।
+  var JSQR_URL = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+  var scan = { stream: null, det: null, running: false, busy: false, raf: 0, last: 0, torch: false, cv: document.createElement('canvas') };
+  var decoderP = null;
+  function loadScript(src) {
+    return new Promise(function (ok, fail) {
+      var s = document.createElement('script');
+      s.src = src; s.async = true; s.onload = function () { ok(); };
+      s.onerror = function () { s.remove(); fail(new Error('load')); };
+      document.head.appendChild(s);
+    });
+  }
+  function ensureDecoder() {
+    if (decoderP) return decoderP;
+    var p = new Promise(function (ok) {
+      var BD = window.BarcodeDetector;
+      if (!BD) { ok(); return; }
+      var fm = BD.getSupportedFormats ? BD.getSupportedFormats() : Promise.resolve(['qr_code']);
+      fm.then(function (f) {
+        if (f.indexOf('qr_code') !== -1) { try { scan.det = new BD({ formats: ['qr_code'] }); } catch (e) { scan.det = null; } }
+        ok();
+      }, function () { ok(); });
+    }).then(function () {
+      if (scan.det || window.jsQR) return;
+      return loadScript(JSQR_URL).then(function () { if (!window.jsQR) throw new Error('nojsqr'); });
+    });
+    p.catch(function () { decoderP = null; });
+    decoderP = p;
+    return p;
+  }
+  function decodeAny(src, w, h, both) {
+    return ensureDecoder().then(function () {
+      if (scan.det) {
+        return scan.det.detect(src).then(function (r) { return r && r.length ? String(r[0].rawValue || '') : ''; });
+      }
+      var k = Math.min(1, 800 / Math.max(w, h)), cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+      var cn = scan.cv; cn.width = cw; cn.height = ch;
+      var cx = cn.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(src, 0, 0, cw, ch);
+      var d = cx.getImageData(0, 0, cw, ch);
+      return Promise.resolve(window.jsQR(d.data, cw, ch, { inversionAttempts: both ? 'attemptBoth' : 'dontInvert' })).then(function (r) { return r ? r.data : ''; });
+    });
+  }
+  function scMsg(t, err) { var e = $('scMsg'); e.textContent = t; e.className = err ? 'help err' : 'help'; }
+  function scStop() {
+    scan.running = false;
+    cancelAnimationFrame(scan.raf);
+    if (scan.stream) { scan.stream.getTracks().forEach(function (t) { t.stop(); }); scan.stream = null; }
+    var v = $('scVideo'); v.pause(); v.srcObject = null;
+    $('scView').hidden = true; $('scStart').hidden = false; $('scStop').hidden = true; $('scTorch').hidden = true;
+    scan.torch = false;
+  }
+  function scKind(t) {
+    if (/^https?:\/\//i.test(t)) return 'url';
+    if (/^tel:/i.test(t)) return 'tel';
+    if (/^mailto:/i.test(t)) return 'mail';
+    if (/^smsto?:/i.test(t)) return 'sms';
+    if (/^WIFI:/i.test(t)) return 'wifi';
+    if (/^BEGIN:VCARD/i.test(t)) return 'vcard';
+    if (/^geo:/i.test(t)) return 'geo';
+    return 'text';
+  }
+  var SC_LABEL = { url: 'लिंक', tel: 'फ़ोन नंबर', mail: 'ईमेल', sms: 'SMS', wifi: 'वाई-फ़ाई', vcard: 'कॉन्टैक्ट कार्ड', geo: 'लोकेशन', text: 'टेक्स्ट' };
+  function wifiParse(t) {
+    var o = {}, body = t.slice(5), parts = [], cur = '';
+    for (var i = 0; i < body.length; i++) {
+      var ch = body.charAt(i);
+      if (ch === '\\' && i + 1 < body.length) { cur += body.charAt(++i); continue; }
+      if (ch === ';') { parts.push(cur); cur = ''; continue; }
+      cur += ch;
+    }
+    if (cur) parts.push(cur);
+    parts.forEach(function (p) { var k = p.indexOf(':'); if (k > 0) o[p.slice(0, k)] = p.slice(k + 1); });
+    return o;
+  }
+  function addAct(label, fn, alt) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'btn' + (alt ? ' alt' : ''); b.textContent = label;
+    b.addEventListener('click', fn);
+    $('scActs').appendChild(b);
+  }
+  function addLink(label, href) {
+    var a = document.createElement('a');
+    a.className = 'btn'; a.textContent = label; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    $('scActs').appendChild(a);
+  }
+  // नतीजा दिखाना: कुछ भी अपने आप नहीं खुलता। सिर्फ़ http(s), tel और mailto के बटन बनते हैं।
+  function scShow(t) {
+    var kind = scKind(t), host = '';
+    $('scKind').textContent = SC_LABEL[kind];
+    if (kind === 'url') { try { host = new URL(t).hostname; } catch (e) { host = ''; } }
+    $('scHost').hidden = !host; $('scHost').textContent = host ? 'वेबसाइट: ' + host : '';
+    $('scText').textContent = t;
+    $('scActs').textContent = '';
+    if (kind === 'url') addLink('लिंक खोलें', t);
+    else if (kind === 'tel' && /^tel:\+?[\d\s\-()]+$/i.test(t)) addLink('कॉल करें', t);
+    else if (kind === 'mail' && /^mailto:[^\s]+$/i.test(t)) addLink('ईमेल भेजें', t);
+    else if (kind === 'geo') {
+      var g = /^geo:(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i.exec(t);
+      if (g) addLink('मैप में खोलें', 'https://maps.google.com/?q=' + g[1] + ',' + g[2]);
+    } else if (kind === 'wifi') {
+      var w = wifiParse(t);
+      if (w.S) addAct('नेटवर्क का नाम कॉपी करें', function () { copyText(w.S, 'नाम कॉपी हो गया।'); });
+      if (w.P) addAct('पासवर्ड कॉपी करें', function () { copyText(w.P, 'पासवर्ड कॉपी हो गया।'); });
+    }
+    addAct('पूरा टेक्स्ट कॉपी करें', function () { copyText(t, 'कॉपी हो गया।'); }, true);
+    addAct('दोबारा स्कैन करें', function () { scStart(); }, true);
+    $('scResult').hidden = false;
+    if ($('scResult').scrollIntoView) $('scResult').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  function scDone(t) {
+    scStop();
+    try { if (navigator.vibrate) navigator.vibrate(60); } catch (e) { /* ज़रूरी नहीं */ }
+    scMsg('QR मिल गया।');
+    scShow(t);
+  }
+  function scLoop() {
+    if (!scan.running) return;
+    var v = $('scVideo'), now = performance.now();
+    if (scan.busy || now - scan.last < 110 || v.readyState < 2 || !v.videoWidth) { scan.raf = requestAnimationFrame(scLoop); return; }
+    scan.last = now; scan.busy = true;
+    decodeAny(v, v.videoWidth, v.videoHeight, false).then(function (t) {
+      scan.busy = false;
+      if (!scan.running) return;
+      if (t) scDone(t); else scan.raf = requestAnimationFrame(scLoop);
+    }, function () {
+      scan.busy = false;
+      // फ़ोन का अपना स्कैनर न चले तो jsQR पर आ जाइए
+      if (scan.det) { scan.det = null; decoderP = null; }
+      if (scan.running) scan.raf = requestAnimationFrame(scLoop);
+    });
+  }
+  function scStart() {
+    if (scan.running) return;
+    $('scResult').hidden = true;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      scMsg('इस ब्राउज़र में कैमरा नहीं चल सकता। Chrome या Safari में साइट खोलिए, या नीचे से QR की फ़ोटो चुनिए।', true);
+      return;
+    }
+    scMsg('कैमरा खुल रहा है…');
+    ensureDecoder().then(function () {
+      return navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+    }).then(function (stream) {
+      scan.stream = stream;
+      var v = $('scVideo');
+      v.muted = true; v.setAttribute('playsinline', ''); v.srcObject = stream;
+      $('scView').hidden = false;
+      return v.play();
+    }).then(function () {
+      $('scStart').hidden = true; $('scStop').hidden = false;
+      var tr = scan.stream.getVideoTracks()[0], caps = (tr && tr.getCapabilities) ? tr.getCapabilities() : {};
+      $('scTorch').hidden = !caps.torch;
+      scMsg('QR को चौकोर फ्रेम के अंदर लाइए। थोड़ा दूर और सीधा रखिए।');
+      scan.running = true; scan.busy = false; scan.last = 0;
+      scLoop();
+    }).catch(function (e) {
+      scStop();
+      var n = e && e.name, m = e && e.message;
+      if (n === 'NotAllowedError' || n === 'SecurityError') scMsg('कैमरे की अनुमति नहीं मिली। ब्राउज़र की सेटिंग में इस साइट के लिए कैमरा चालू कीजिए, या नीचे से QR की फ़ोटो चुनिए।', true);
+      else if (n === 'NotFoundError' || n === 'OverconstrainedError') scMsg('इस फ़ोन में कैमरा नहीं मिला। नीचे से QR की फ़ोटो चुनिए।', true);
+      else if (n === 'NotReadableError') scMsg('कैमरा किसी दूसरे ऐप में चालू है। उसे बंद करके फिर कोशिश कीजिए।', true);
+      else if (m === 'load' || m === 'nojsqr') scMsg('स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।', true);
+      else scMsg('कैमरा चालू नहीं हो सका। साइट को Chrome या Safari में खोलिए (Instagram या WhatsApp के अंदर नहीं), या नीचे से QR की फ़ोटो चुनिए।', true);
+    });
+  }
+  function scFromFile(file) {
+    if (!file) return;
+    scStop(); $('scResult').hidden = true; scMsg('फ़ोटो पढ़ रहे हैं…');
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      decodeAny(img, img.naturalWidth, img.naturalHeight, true).then(function (t) {
+        URL.revokeObjectURL(url);
+        if (t) { scMsg('QR मिल गया।'); scShow(t); }
+        else scMsg('इस फ़ोटो में QR नहीं मिला। साफ़ और सीधी फ़ोटो चुनिए।', true);
+      }, function () {
+        URL.revokeObjectURL(url);
+        scMsg('स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।', true);
+      });
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); scMsg('यह फ़ोटो खुल नहीं पाई। दूसरी चुनिए।', true); };
+    img.src = url;
+  }
+  $('scStart').addEventListener('click', scStart);
+  $('scStop').addEventListener('click', function () { scStop(); scMsg('कैमरा बंद है।'); });
+  $('scGal').addEventListener('click', function () { $('scPick').click(); });
+  $('scPick').addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; scFromFile(f); });
+  $('scTorch').addEventListener('click', function () {
+    var tr = scan.stream && scan.stream.getVideoTracks()[0];
+    if (!tr) return;
+    scan.torch = !scan.torch;
+    tr.applyConstraints({ advanced: [{ torch: scan.torch }] }).catch(function () { scan.torch = !scan.torch; toast('इस फ़ोन में टॉर्च नहीं चल सकी।'); });
+  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden && scan.running) { scStop(); scMsg('कैमरा बंद हो गया। दोबारा चालू कीजिए।'); } });
+  window.addEventListener('pagehide', scStop);
+
   /* ---------- मौजूदा लोकेशन ---------- */
   function fillLoc(inputId, msgId) {
     var msg = $(msgId);
@@ -1349,17 +1962,23 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   function applyTemplate() {
     var key = $('tpl').value, t = TPL[key];
     $('posterText').hidden = key === 'plain';
-    if (key !== 'plain') { $('headText').value = t.head; $('subText').value = t.sub; }
+    if (key !== 'plain') { $('headText').value = ''; $('subText').value = ''; $('headText').placeholder = 'जैसे: ' + t.head; $('subText').placeholder = 'जैसे: ' + t.sub; }
     dots['1'] = t.dot;
     if (tab === '1') $('dotColor').value = t.dot;
   }
   function setTab(t) {
     tab = t;
     document.body.setAttribute('data-level', t);
-    ['1', '2', '3'].forEach(function (n) {
+    ['1', '2', '3', '4'].forEach(function (n) {
       $('lv' + n).setAttribute('aria-selected', n === t ? 'true' : 'false');
       $('pane' + n).hidden = n !== t;
     });
+    var sc = t === '5';
+    $('lv5').setAttribute('aria-selected', sc ? 'true' : 'false');
+    $('scanPanel').hidden = !sc;
+    document.querySelector('.layout').hidden = sc;
+    if (!sc) scStop();
+    if (sc) return;
     $('dotColor').value = dots[t];
     render();
   }
@@ -1374,7 +1993,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     b.addEventListener('click', function () { $('dotColor').value = col; dots[tab] = col; render(); });
     $('swatches').appendChild(b);
   });
-  ['1', '2', '3'].forEach(function (n) { $('lv' + n).addEventListener('click', function () { setTab(n); }); });
+  ['1', '2', '3', '4'].forEach(function (n) { $('lv' + n).addEventListener('click', function () { setTab(n); }); });
+  $('lv5').addEventListener('click', function () { setTab('5'); });
   $('tpl').addEventListener('change', function () { applyTemplate(); render(); });
   $('dotColor').addEventListener('input', function () { dots[tab] = this.value; requestRender(); });
   Array.prototype.forEach.call(document.querySelectorAll('input[name="ctype"]'), function (r) {
@@ -1383,7 +2003,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   var INPUTS = ['linkUrl', 'headText', 'subText', 'shape', 'bgColor',
     'eName', 'eBlood', 'ePhone', 'eF1n', 'eF1p', 'eF2n', 'eF2p', 'eAddr', 'eCity', 'eMap', 'eNote', 'eType', 'eSticker',
     'p3Layout', 'ovType', 'ovAmt', 'p3Url', 'p3Phone', 'p3Wa', 'p3WaMsg', 'p3Loc', 'p3Addr', 'p3Mail', 'p3Subj',
-    'cName', 'cOrg', 'cPhone', 'cEmail', 'cWeb', 'cAddr', 'p3Text', 'p3Head', 'p3Sub', 'p3Scan'];
+    'cName', 'cOrg', 'cPhone', 'cEmail', 'cWeb', 'cAddr', 'p3Text', 'p3Head', 'p3Sub', 'p3Scan',
+    'lgVal', 'lgName', 'lgSub', 'lgScan', 'lgBg', 'lgIconColor'];
   INPUTS.forEach(function (id) {
     $(id).addEventListener('input', requestRender);
     $(id).addEventListener('change', requestRender);
@@ -1392,6 +2013,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   setupShare();
   applyTemplate();
   showCtPane();
+  lgTypeUi();
   render();
   setupAppQR();
   fontsReady.then(function () { render(); setupAppQR(); });
@@ -1490,6 +2112,101 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       navigator.serviceWorker.register('service-worker.js').catch(function () {});
     });
   }
+})();
+</script>
+<script>
+/* ऊपर का बैनर: हमारे चार ऐप, एक बार में एक, बारी-बारी से */
+(function () {
+  'use strict';
+  var PROMO_MS = 1000;      // हर ऐप कितनी देर दिखे (मिलीसेकंड). धीमा करना हो तो 2500 कर दीजिए।
+  var PROMO_CTA = 'इंस्टॉल';
+  function svg(s) { return 'data:image/svg+xml,' + encodeURIComponent(s); }
+  var L_BILL = svg(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='5' y='5' width='54' height='54' rx='13' fill='#15803d'/><path d='M18 14h28v36l-5-3-4.5 3-4.5-3-4.5 3-4.5-3-5 3z' fill='#fff'/><text x='32' y='38' font-size='20' font-weight='700' text-anchor='middle' fill='#15803d' font-family='Arial,sans-serif'>&#8377;</text></svg>`);
+  var L_FIRE = svg(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='1' x2='0' y2='0'><stop offset='0' stop-color='#dc2626'/><stop offset='1' stop-color='#f59e0b'/></linearGradient></defs><path d='M34 4c3 11-3 15-9 23-4 6-6 11-4 17 2 9 9 15 17 15 10 0 17-8 17-18 0-10-6-15-10-21-1 6-3 9-6 10 3-9 0-17-5-26z' fill='url(#g)'/><path d='M33 37c-3 4-5 7-4 11 1 4 4 7 8 7 5 0 8-4 8-9 0-4-3-7-5-10-1 3-3 4-5 4 1-3 0-5-2-3z' fill='#fff7ed' opacity='.92'/></svg>`);
+  var L_ROAD = svg(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='4' y='4' width='56' height='56' rx='14' fill='#f5f0ff'/><path d='M16 52C16 40 42 44 42 32S22 24 34 14' fill='none' stroke='#7c3aed' stroke-width='5' stroke-linecap='round'/><circle cx='16' cy='52' r='5.5' fill='#f59e0b'/><circle cx='42' cy='35' r='4.5' fill='#0f766e'/><path d='M34 8v14' stroke='#7c3aed' stroke-width='3' stroke-linecap='round'/><path d='M34 8l14 5-14 5z' fill='#f59e0b'/></svg>`);
+  var L_TRADE = 'data:image/jpeg;base64,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';
+
+  // name: ऐप का नाम, desc: बैनर की एक छोटी लाइन, long: पूरी जानकारी (टूलटिप/स्क्रीन-रीडर), url: खुलने का लिंक,
+  // logo: लोगो (न चले तो fallback), c1/c2: बैनर के रंग
+  var APPS = [
+    { name: 'RJ Intraday Trading', desc: 'शेयर बाज़ार हिंदी में सीखिए', long: 'शेयर बाज़ार की नींव मुफ़्त सीखिए, फिर इंट्राडे ट्रेडिंग का कोर्स। हिंदी और English में।',
+      url: 'https://rj-intraday-trading.onrender.com/', logo: L_TRADE, c1: '#1d4ed8', c2: '#0b1b2b' },
+    { name: 'RJ Smart Billing', desc: 'बिल और उधारी खाता, सब मोबाइल में', long: 'बिल बनाइए, उधारी का हिसाब रखिए, PDF और WhatsApp पर भेजिए। डेटा सिर्फ़ आपके फ़ोन में।',
+      url: 'https://rj-smart-billing.onrender.com/', logo: 'https://rj-smart-billing.onrender.com/icon-192.png', fallback: L_BILL, c1: '#15803d', c2: '#0b1b2b' },
+    { name: 'Fire Safety Academy', desc: 'आग से बचना और बचाना सीखिए', long: 'आग से बचाव का हिंदी कोर्स: 7 अध्याय, 50 सवालों की परीक्षा और सर्टिफ़िकेट।',
+      url: 'https://fire-safety-academy.onrender.com/', logo: L_FIRE, c1: '#c62828', c2: '#2b0408' },
+    { name: 'जीवन करियर रोडमैप', desc: '5 से 65 साल तक का करियर नक्शा', long: 'हर उम्र में क्या करें, पैसा, स्किल और किस से बचें। ग्राफ़ और PDF के साथ, मुफ़्त।',
+      url: 'https://rajan03jha.github.io/career-roadmap/', logo: L_ROAD, c1: '#6d28d9', c2: '#1d0a3d' }
+  ].filter(function (a) { return a.name && /^https?:\/\//i.test(a.url); });
+
+  var box = document.getElementById('promo'), row = document.getElementById('promoRow');
+  if (!box || !row || !APPS.length) return;
+
+  var slides = APPS.map(function (a) {
+    var s = document.createElement('a');
+    s.className = 'pslide'; s.href = a.url; s.target = '_blank'; s.rel = 'noopener noreferrer';
+    s.title = a.long || a.desc;
+    s.setAttribute('aria-label', a.name + ': ' + (a.long || a.desc) + ' ' + PROMO_CTA);
+    s.style.setProperty('--pc', a.c1); s.style.setProperty('--pc2', a.c2);
+    var lg = document.createElement('span'); lg.className = 'plogo';
+    function initial() { lg.textContent = a.name.charAt(0); }
+    if (a.logo) {
+      var im = document.createElement('img');
+      im.alt = ''; im.decoding = 'async';
+      im.onerror = function () {
+        if (a.fallback && im.getAttribute('src') !== a.fallback) im.src = a.fallback;
+        else { im.remove(); initial(); }
+      };
+      im.src = a.logo; lg.appendChild(im);
+    } else { initial(); }
+    var tx = document.createElement('span'); tx.className = 'ptext';
+    var st = document.createElement('strong'); st.textContent = a.name;
+    var sm = document.createElement('small'); sm.textContent = a.desc;
+    tx.appendChild(st); tx.appendChild(sm);
+    var cta = document.createElement('span'); cta.className = 'pcta'; cta.textContent = PROMO_CTA;
+    s.appendChild(lg); s.appendChild(tx); s.appendChild(cta);
+    row.appendChild(s);
+    return s;
+  });
+
+  var bar = document.createElement('div'); bar.className = 'pbar'; bar.setAttribute('aria-hidden', 'true');
+  var dots = slides.map(function () { var d = document.createElement('i'); bar.appendChild(d); return d; });
+  if (slides.length > 1) row.appendChild(bar);
+
+  var cur = -1, timer = 0, held = false;
+  function show(n) {
+    var prev = slides[cur], next = slides[n];
+    if (prev === next) return;
+    if (prev) {
+      prev.classList.remove('on'); prev.classList.add('out');
+      setTimeout(function () { prev.classList.remove('out'); }, 260);
+    }
+    next.classList.remove('out'); next.classList.add('on');
+    dots.forEach(function (d, i) { d.classList.toggle('on', i === n); });
+    cur = n;
+  }
+  function start() { if (slides.length > 1 && !timer && !held && !document.hidden) timer = setInterval(function () { show((cur + 1) % slides.length); }, PROMO_MS); }
+  function stop() { clearInterval(timer); timer = 0; }
+  var relT = 0;
+  function holdFor(ms) { held = true; stop(); clearTimeout(relT); relT = setTimeout(function () { held = false; start(); }, ms); }
+  function release(ms) { clearTimeout(relT); relT = setTimeout(function () { held = false; start(); }, ms || 0); }
+  function hold() { holdFor(4000); }
+
+  // माउस/उँगली रखते ही रुक जाए ताकि आसानी से दबाया जा सके. माउस 4 सेकंड स्थिर रहे तो फिर चल पड़े।
+  row.addEventListener('mouseenter', hold);
+  row.addEventListener('mousemove', hold);
+  row.addEventListener('mouseleave', function () { release(0); });
+  row.addEventListener('focusin', hold);
+  row.addEventListener('focusout', function () { release(0); });
+  row.addEventListener('touchstart', hold, { passive: true });
+  row.addEventListener('touchend', function () { release(2500); }, { passive: true });
+  row.addEventListener('touchcancel', function () { release(2500); }, { passive: true });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+
+  box.hidden = false;
+  document.body.classList.add('has-promo');
+  show(0);
+  start();
 })();
 </script>
 </body>
