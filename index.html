@@ -2446,15 +2446,20 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       if (k < 1) requestAnimationFrame(step);
     })();
   }
-  function call(kind) {
-    return fetch(BASE + kind + '/' + NS + '/' + KEY).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  function getJ(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  function viaAbacus() {
+    var u = 'https://abacus.jasoncameron.dev/';
+    return (seen ? getJ(u + 'get/' + NS + '/' + KEY).catch(function () { return getJ(u + 'hit/' + NS + '/' + KEY); }) : getJ(u + 'hit/' + NS + '/' + KEY))
+      .then(function (j) { if (typeof j.value !== 'number') throw new Error('bad'); return j.value; });
   }
-  var first = seen ? call('get').catch(function () { return call('hit'); }) : call('hit');
-  first.then(function (j) {
-    if (typeof j.value !== 'number') return;
+  function viaCounterApi() {
+    var u = 'https://api.counterapi.dev/v1/' + NS + '/' + KEY + '/';
+    return getJ(seen ? u : u + 'up').then(function (j) { if (typeof j.count !== 'number') throw new Error('bad'); return j.count; });
+  }
+  viaAbacus().catch(viaCounterApi).then(function (n) {
     if (!seen) { try { localStorage.setItem('qrs_counted', '1'); } catch (e) { /* ignore */ } }
-    show(j.value);
-  }).catch(function () { /* कार्ड छिपा रहेगा */ });
+    show(n);
+  }).catch(function () { /* सिर्फ़ धन्यवाद दिखेगा, संख्या नहीं */ });
 })();
 </script>
 <script>window.QRLang.init();</script>
