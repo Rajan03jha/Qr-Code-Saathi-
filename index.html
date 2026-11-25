@@ -123,6 +123,24 @@ button, input, select, textarea { font-family: inherit; }
   .layout { grid-template-columns: minmax(0, 1fr) 420px; align-items: start; }
   .preview { position: sticky; top: 14px; }
 }
+.wzbar { display: flex; flex-direction: column; gap: 8px; }
+.wzhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.wzhead b { color: var(--accent); font-size: 14px; letter-spacing: .02em; }
+.wzhead span { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+.wzprog { height: 8px; border-radius: 99px; background: var(--accent-soft); overflow: hidden; }
+.wzprog i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width .25s ease; }
+.wz-off { display: none !important; }
+body[data-view="home"] .layout, body[data-view="home"] #scanPanel, body[data-view="home"] .worktop { display: none !important; }
+body[data-view="work"] .hero, body[data-view="work"] .levels, body[data-view="work"] #appQr, body[data-view="work"] #installGuide, body[data-view="work"] #shareCard, body[data-view="work"] #visitCard { display: none !important; }
+.visit { text-align: center; background: linear-gradient(135deg, var(--l1-soft), var(--l3-soft)); }
+.vnum b { font-family: var(--font-display); font-size: 48px; line-height: 1.1; color: var(--l1); }
+.vtxt { margin: 2px 0 6px; font-weight: 700; font-size: 17px; }
+.vthx { margin: 0; color: var(--muted); font-size: 15px; }
+.worktop { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; }
+.worktop strong { font-family: var(--font-display); font-size: 20px; color: var(--accent); }
+.wznav { display: flex; gap: 10px; }
+.wznav .btn { flex: 1; }
+@media (max-width: 899px) { .preview.wzhide { display: none; } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
 .panel.main { border-top: 5px solid var(--accent); }
 .stack { display: flex; flex-direction: column; gap: 16px; }
@@ -289,7 +307,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 }
 </style>
 </head>
-<body data-level="1">
+<body data-level="1" data-view="home">
 
 <!-- ऊपर का बैनर: हमारे ऐप (एक बार में एक) -->
 <aside class="promo" id="promo" aria-label="हमारे दूसरे ऐप" hidden>
@@ -317,10 +335,16 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       <span>QR साथी</span>
     </div>
     <div class="navr">
+      <button class="pill" id="btnLang" type="button" lang="en" aria-label="Language: switch to English">English</button>
       <button class="pill" id="btnInstall" type="button">ऐप इंस्टॉल करें</button>
       <button class="pill" id="btnShareNav" type="button">शेयर करें</button>
     </div>
   </header>
+
+  <div class="worktop" id="workTop">
+    <button class="btn alt small" id="btnHome" type="button">← मेनू</button>
+    <strong id="workName"></strong>
+  </div>
 
   <section class="hero">
     <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true" fill="currentColor"><path d="M4 4h16v16H4zM9 9v6h6V9zM28 4h16v16H28zM33 9v6h6V9zM4 28h16v16H4zM9 33v6h6v-6z"/><path d="M28 28h6v6h-6zM38 28h6v6h-6zM28 38h6v6h-6zM38 38h6v6h-6zM33 33h6v6h-6z"/></svg>
@@ -378,6 +402,10 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 
   <div class="layout">
     <section class="panel main stack" aria-label="जानकारी भरें">
+      <div class="wzbar" id="wzBar">
+        <div class="wzhead"><b id="wzStep"></b><span id="wzTitle"></span></div>
+        <div class="wzprog" aria-hidden="true"><i id="wzFill"></i></div>
+      </div>
 
       <!-- लेवल 1 -->
       <div id="pane1" class="stack pane" role="tabpanel">
@@ -729,6 +757,12 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
         </div>
         <div id="styleWarn" class="box warn" hidden></div>
       </div>
+
+      <div id="wzMsg" class="err" role="alert" hidden></div>
+      <div class="wznav" id="wzNav">
+        <button class="btn alt" id="wzBack" type="button">पीछे</button>
+        <button class="btn" id="wzNext" type="button">आगे</button>
+      </div>
     </section>
 
     <aside class="panel main preview" aria-label="प्रीव्यू">
@@ -747,6 +781,12 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       <p class="foot">सेव करने के बाद अपने फ़ोन के कैमरा से एक बार स्कैन करके ज़रूर देखिए। बाइक पर लगाने के लिए कम से कम 4 सेमी का QR छापिए और ऊपर पारदर्शी लैमिनेशन लगाइए।</p>
     </aside>
   </div>
+
+  <section class="panel visit" id="visitCard" aria-label="धन्यवाद" hidden>
+    <div class="vnum"><b id="visN">0</b></div>
+    <p class="vtxt">लोग अब तक यहाँ आ चुके हैं</p>
+    <p class="vthx">आप सभी का दिल से शुक्रिया। कोई भी, कहीं से भी आए, सबका स्वागत है।</p>
+  </section>
 
   <section class="panel appqr" id="appQr" aria-label="इस ऐप का QR कोड">
     <h2>इस ऐप का QR कोड</h2>
@@ -818,16 +858,82 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 
 <div class="toast" id="toast" role="status" hidden></div>
 
+<script>
+/* हिंदी / English: पूरा पेज हिंदी में लिखा है, English का शब्दकोश नीचे है */
+(function () {
+  'use strict';
+  var D = {"QR साथी इंस्टॉल कीजिए": "Install QR Saathi", "फ़ोन में ऐप की तरह खुलेगा।": "It opens like an app on your phone.", "इंस्टॉल": "Install", "बाद में": "Later", "QR साथी": "QR Saathi", "← मेनू": "← Menu", "धन्यवाद": "Thank you", "लोग अब तक यहाँ आ चुके हैं": "people have visited so far", "आप सभी का दिल से शुक्रिया। कोई भी, कहीं से भी आए, सबका स्वागत है।": "Heartfelt thanks to every one of you. Everyone is welcome, from anywhere.", "ऐप इंस्टॉल करें": "Install app", "शेयर करें": "Share", "मुफ़्त QR स्टूडियो": "Free QR Studio", "अपना QR, अपने अंदाज़ में": "Your QR, your way", "लिंक, फ़ोन, लोकेशन या इमरजेंसी जानकारी डालिए। अपनी फ़ोटो के साथ पोस्टर बनाइए, सेव कीजिए और सीधे Instagram या WhatsApp पर भेजिए।": "Enter a link, phone number, location or emergency details. Make a poster with your own photo, save it and send it straight to Instagram or WhatsApp.", "हमेशा मुफ़्त": "Always free", "फ़ोटो के साथ": "With your photo", "बाइक स्टिकर": "Bike sticker", "QR स्कैनर": "QR scanner", "ऐप की तरह इंस्टॉल": "Install like an app", "QR स्कैन करें": "Scan a QR", "कैमरे से कोई भी QR कोड स्कैन कीजिए": "Scan any QR code with your camera", "लिंक का QR": "Link QR", "YouTube, वेबसाइट या ऐप का पोस्टर": "Poster for YouTube, a website or an app", "इमरजेंसी कार्ड": "Emergency card", "बाइक स्टिकर: फ़ोन, पता और लोकेशन": "Bike sticker: phone, address and location", "फ़ोटो वाला QR": "Photo QR", "अपनी फ़ोटो के साथ, कुछ भी डालिए": "With your own photo, add anything", "लोगो स्टिकर": "Logo sticker", "बीच में अपना या किसी भी चीज़ का लोगो": "Your own or any logo in the middle", "कैमरे से कोई भी QR कोड स्कैन कीजिए। स्कैन आपके फ़ोन में ही होता है, कोई फ़ोटो कहीं नहीं जाती। लिंक अपने आप नहीं खुलेगा, पहले आपको दिखेगा।": "Scan any QR code with your camera. Scanning happens on your phone and no photo goes anywhere. The link will not open by itself; you will see it first.", "कैमरा चालू करके QR को चौकोर फ्रेम के अंदर लाइए।": "Turn on the camera and bring the QR inside the square frame.", "कैमरा चालू करके स्कैन करें": "Turn on camera and scan", "कैमरा बंद करें": "Turn off camera", "टॉर्च": "Torch", "गैलरी से QR फ़ोटो चुनें": "Choose a QR photo from gallery", "उदाहरण लिंक भरा है। अपना लिंक डालिए।": "An example link is filled in. Enter your own link.", "लिंक": "Link", "YouTube, Instagram, WhatsApp, ऐप स्टोर या कोई भी वेबसाइट का लिंक।": "A link to YouTube, Instagram, WhatsApp, an app store or any website.", "पोस्टर का डिज़ाइन": "Poster design", "वीडियो (लाल)": "Video (red)", "सोशल मीडिया": "Social media", "ऐप डाउनलोड": "App download", "बिज़नेस": "Business", "सिर्फ़ QR (बिना पोस्टर)": "QR only (no poster)", "पोस्टर का बड़ा टेक्स्ट": "Poster headline", "छोटी लाइन": "Small line", "इस QR को स्कैन करते ही नाम, फ़ोन, पता और मैप लिंक फ़ोन की स्क्रीन पर दिख जाते हैं। इसके लिए किसी वेबसाइट या इंटरनेट की ज़रूरत नहीं पड़ती। लोकेशन घर का तय पता होती है, लाइव नहीं बदलती। स्कैन करने वाला कोई भी यह जानकारी देख सकता है, इसलिए वही डालिए जो आप साझा करना चाहते हैं।": "When someone scans this QR, your name, phone, address and map link appear on their phone screen. It needs no website or internet. The location is a fixed home address and does not update live. Anyone who scans can see this information, so enter only what you are happy to share.", "उदाहरण की जानकारी भरी है। सेव करने से पहले अपनी जानकारी डालिए।": "Example details are filled in. Enter your own details before saving.", "आपका नाम": "Your name", "ब्लड ग्रुप": "Blood group", "न दिखाएँ": "Do not show", "आपका फ़ोन नंबर": "Your phone number", "देश कोड के साथ लिखिए, जैसे +91। इससे स्कैन करने वाला सीधे कॉल कर सकता है।": "Write it with the country code, like +91. The person scanning can then call you directly.", "घरवाले का नाम": "Family member's name", "उनका नंबर": "Their number", "दूसरे घरवाले का नाम": "Second family member's name", "घर का पता": "Home address", "शहर और राज्य": "City and state", "Google Maps लोकेशन लिंक (वैकल्पिक)": "Google Maps location link (optional)", "मेरी मौजूदा लोकेशन भरें": "Fill in my current location", "Google Maps में अपना घर खोलें, शेयर दबाएँ, लिंक कॉपी करके यहाँ चिपकाएँ। खाली छोड़ेंगे तो पते से मैप लिंक अपने आप बन जाएगा। मौजूदा लोकेशन वाला बटन घर पर खड़े होकर दबाइए।": "Open your home in Google Maps, tap Share, copy the link and paste it here. If you leave it empty, a map link is made from the address automatically. Press the current-location button while standing at home.", "मेडिकल जानकारी (वैकल्पिक)": "Medical information (optional)", "QR में जानकारी का रूप": "How the details are stored in the QR", "सीधा टेक्स्ट (सबसे आसान स्कैन)": "Plain text (easiest to scan)", "कॉन्टैक्ट कार्ड (फ़ोन में सेव हो सके)": "Contact card (can be saved to the phone)", "आउटपुट": "Output", "सिर्फ़ QR": "QR only", "1. अपनी फ़ोटो": "1. Your photo", "गैलरी से चुनें": "Choose from gallery", "कैमरे से खींचें": "Take with camera", "फ़ोटो हटाएँ": "Remove photo", "फ़ोटो आपके फ़ोन में ही रहती है, कहीं अपलोड नहीं होती।": "Your photo stays on your phone and is not uploaded anywhere.", "फ़ोटो कहाँ दिखे": "Where the photo shows", "पूरे बैकग्राउंड में, बीच में QR": "Full background, QR in the middle", "गोल फ़ोटो ऊपर, QR नीचे": "Round photo on top, QR below", "फ़ोटो पर परत": "Overlay on the photo", "गहरी (टेक्स्ट सफ़ेद)": "Dark (white text)", "हल्की (टेक्स्ट काला)": "Light (black text)", "कोई नहीं": "None", "परत कितनी गहरी:": "Overlay strength:", "2. QR में क्या डालें": "2. What to put in the QR", "फ़ोन नंबर": "Phone number", "लोकेशन": "Location", "ईमेल": "Email", "बिज़नेस कार्ड": "Business card", "टेक्स्ट": "Text", "10 अंक लिखेंगे तो +91 (भारत) अपने आप जुड़ जाएगा। स्कैन करने पर सीधे कॉल का विकल्प खुलेगा।": "If you enter 10 digits, +91 (India) is added automatically. Scanning gives a direct call option.", "WhatsApp नंबर": "WhatsApp number", "पहला संदेश (वैकल्पिक)": "First message (optional)", "Google Maps लिंक": "Google Maps link", "या पता लिखिए (वैकल्पिक)": "Or write an address (optional)", "मैप लिंक खाली हो तो इस पते से लिंक बन जाएगा। बिज़नेस की लोकेशन के लिए दुकान पर खड़े होकर बटन दबाना सबसे सही रहता है।": "If the map link is empty, a link is made from this address. For a business location, pressing the button while standing at the shop works best.", "ईमेल पता": "Email address", "विषय (वैकल्पिक)": "Subject (optional)", "नाम": "Name", "कंपनी या पद": "Company or title", "फ़ोन": "Phone", "वेबसाइट": "Website", "पता": "Address", "आपका टेक्स्ट": "Your text", "3. पोस्टर पर क्या लिखें": "3. What to write on the poster", "बड़ा टेक्स्ट": "Headline", "छोटी लाइन (वैकल्पिक)": "Small line (optional)", "स्कैन वाली पट्टी": "Scan strip", "1. स्टिकर का ढंग": "1. Sticker style", "लोगो, फिर नाम, फिर QR": "Logo, then name, then QR", "ऊपर नाम, QR के बीच में लोगो": "Name on top, logo in the middle of the QR", "सिर्फ़ QR, बीच में लोगो": "QR only, logo in the middle", "2. लोगो": "2. Logo", "अपना लोगो अपलोड करें": "Upload your logo", "लोगो हटाएँ": "Remove logo", "लोगो आपके फ़ोन में ही रहता है, कहीं अपलोड नहीं होता। अपलोड किया लोगो आइकन से ऊपर रहेगा।": "Your logo stays on your phone and is not uploaded anywhere. An uploaded logo is shown instead of an icon.", "या कोई सादा आइकन चुनिए": "Or pick a simple icon", "वीडियो": "Video", "चैट": "Chat", "कैमरा": "Camera", "तारा": "Star", "आइकन का रंग": "Icon colour", "3. QR में क्या डालें": "3. What to put in the QR", "जानकारी का प्रकार": "Type of information", "जानकारी": "Information", "4. स्टिकर पर क्या लिखें": "4. What to write on the sticker", "नाम या यूज़र नेम": "Name or username", "स्कैन वाली पट्टी (वैकल्पिक)": "Scan strip (optional)", "स्टिकर का रंग": "Sticker colour", "QR का स्टाइल": "QR style", "बिंदुओं का आकार": "Dot shape", "चौकोर": "Square", "गोल कोने": "Rounded corners", "बिंदु": "Dots", "बिंदुओं का रंग": "Dot colour", "QR का बैकग्राउंड": "QR background", "प्रीव्यू": "Preview", "सेव / शेयर करें": "Save / Share", "सिर्फ़ QR सेव / शेयर": "Save / Share QR only", "QR के अंदर क्या लिखा है": "What is written inside the QR", "सेव करने के बाद अपने फ़ोन के कैमरा से एक बार स्कैन करके ज़रूर देखिए। बाइक पर लगाने के लिए कम से कम 4 सेमी का QR छापिए और ऊपर पारदर्शी लैमिनेशन लगाइए।": "After saving, scan it once with your phone camera to check. For a bike, print the QR at least 4 cm wide and cover it with clear lamination.", "इस ऐप का QR कोड": "QR code of this app", "दोस्तों को यह QR दिखाइए या भेजिए। वे स्कैन करके साइट खोलेंगे और फ़ोन में इंस्टॉल कर लेंगे। यह QR साइट के पते से अपने आप बनता है।": "Show or send this QR to friends. They scan it to open the site and install it on their phone. This QR is made automatically from the site address.", "QR सेव / शेयर करें": "Save / Share QR", "यह QR साइट के पब्लिक पते (https) पर खोलने पर अपने आप बनता है। अभी आप फ़ाइल सीधे खोल रहे हैं। साइट GitHub Pages पर चालू होने के बाद यहाँ QR दिखेगा।": "This QR appears automatically when the site is opened at its public address (https). You are opening the file directly right now. It will show here once the site is live on GitHub Pages.", "फ़ोन में ऐप कैसे इंस्टॉल करें": "How to install the app on your phone", "इंस्टॉल के बाद QR साथी होम स्क्रीन के आइकन से ऐप की तरह खुलेगा। यह मुफ़्त है, प्ले स्टोर की ज़रूरत नहीं।": "After installing, QR Saathi opens from the home-screen icon like an app. It is free and needs no Play Store.", "आप Instagram या किसी दूसरे ऐप के अंदर साइट खोल रहे हैं। यहाँ इंस्टॉल नहीं होता। ऊपर तीन बिंदु दबाकर \"ब्राउज़र में खोलें\" चुनिए (Android में Chrome, iPhone में Safari), या लिंक कॉपी करके वहाँ चिपकाइए।": "You are opening the site inside Instagram or another app. Installing does not work here. Tap the three dots at the top and choose \"Open in browser\" (Chrome on Android, Safari on iPhone), or copy the link and paste it there.", "लिंक कॉपी करें": "Copy link", "Chrome में यह साइट खोलिए। Instagram या WhatsApp के अंदर नहीं।": "Open this site in Chrome, not inside Instagram or WhatsApp.", "ऊपर दाईं ओर तीन बिंदु दबाइए।": "Tap the three dots at the top right.", "\"Install app\" या \"ऐप इंस्टॉल करें\" चुनिए। यह न दिखे तो \"Add to Home screen\" चुनकर अगली स्क्रीन पर \"Install\" दबाइए।": "Choose \"Install app\". If you do not see it, choose \"Add to Home screen\" and tap \"Install\" on the next screen.", "होम स्क्रीन पर QR साथी का आइकन आ जाएगा। अब उसी से खोलिए।": "The QR Saathi icon will appear on your home screen. Open it from there from now on.", "Safari में यह साइट खोलिए। Instagram या WhatsApp के अंदर नहीं।": "Open this site in Safari, not inside Instagram or WhatsApp.", "नीचे बीच में Share का निशान (ऊपर तीर वाला वर्ग) दबाइए।": "Tap the Share icon at the bottom centre (a square with an arrow).", "नीचे स्क्रॉल करके \"Add to Home Screen\" चुनिए।": "Scroll down and choose \"Add to Home Screen\".", "ऊपर दाईं ओर \"Add\" दबाइए। होम स्क्रीन के आइकन से अब ऐप की तरह खुलेगा।": "Tap \"Add\" at the top right. It will now open like an app from the home-screen icon.", "अभी इंस्टॉल करें": "Install now", "दोस्तों को भेजिए": "Send to friends", "QR साथी मुफ़्त है। अपने दोस्तों और परिवार को भी भेजिए, ताकि वे भी अपना QR बना सकें।": "QR Saathi is free. Send it to your friends and family so they can make their own QR too.", "और ऐप…": "More apps…", "आपकी फ़ोटो और QR की जानकारी आपके फ़ोन से बाहर नहीं जाती।": "Your photo and QR details never leave your phone.", "QR साथी · © 2026 Rajan · Instagram": "QR Saathi · © 2026 Rajan · Instagram", "सेव और शेयर": "Save and share", "फ़ोन में सेव करें": "Save to phone", "शेयर करें: Instagram, WhatsApp और बाकी": "Share: Instagram, WhatsApp and more", "इस ब्राउज़र में सीधा शेयर नहीं है। पहले सेव कीजिए, फिर Instagram या WhatsApp में फ़ोटो जोड़िए।": "Direct sharing is not available in this browser. Save first, then add the photo in Instagram or WhatsApp.", "शेयर दबाने पर आपके फ़ोन की सूची खुलेगी। उसमें Instagram, WhatsApp या कोई भी ऐप चुनिए।": "Your phone's share list will open. Choose Instagram, WhatsApp or any app.", "बंद करें": "Close", "हमारे दूसरे ऐप": "Our other apps", "QR का लेवल": "QR level", "जानकारी भरें": "Fill in the details", "आपका पूरा नाम": "Your full name", "जैसे: पिताजी": "e.g. Father", "वैकल्पिक": "Optional", "मकान नंबर, मोहल्ला": "House number, area", "जैसे: पटना, बिहार": "e.g. Patna, Bihar", "जैसे: पेनिसिलिन से एलर्जी, शुगर के मरीज़": "e.g. allergic to penicillin, diabetic", "QR की जानकारी का प्रकार": "Type of QR information", "नमस्ते, मुझे आपकी जानकारी चाहिए": "Hello, I would like your details", "दुकान नंबर 5, मेन मार्केट, पटना": "Shop no. 5, Main Market, Patna", "जो भी स्कैन करने वाले को दिखाना है": "Whatever you want the scanner to see", "जैसे: मुझसे जुड़ें": "e.g. Connect with me", "आपका नाम · आपका काम": "Your name · Your work", "जैसे: QR कोड को स्कैन कीजिए": "e.g. Scan the QR code", "स्टिकर का ढंग": "Sticker style", "जैसे: चैनल देखिए और सब्सक्राइब कीजिए": "e.g. Watch the channel and subscribe", "QR का प्रीव्यू": "Preview of the QR", "ऐप इंस्टॉल करने का तरीका": "How to install the app", "फ़ोन का प्रकार": "Phone type", "ऐप शेयर करें": "Share the app", "बना हुआ QR": "Generated QR", "QR साथी ऐप से बना ·": "Made with QR Saathi ·", "वीडियो देखने के लिए स्कैन करें": "Scan to watch the video", "हमारा चैनल देखें और सब्सक्राइब करें": "Watch our channel and subscribe", "कैमरा या Google Lens से स्कैन करें": "Scan with your camera or Google Lens", "हमें फ़ॉलो करें": "Follow us", "स्कैन करें और हमसे जुड़ें": "Scan and connect with us", "ऐप डाउनलोड करें": "App download", "स्कैन करें और अभी इंस्टॉल करें": "Scan and install now", "हमसे जुड़ें": "Connect with us", "हमारी जानकारी पाने के लिए स्कैन करें": "Scan to get our details", "दुर्घटना हो तो स्कैन करें": "Scan in case of an accident", "फ़ोन नंबर और पता स्कैन करने पर दिखेगा": "Phone number and address show when scanned", "आपातकालीन संपर्क": "Emergency contact", "ब्लड ग्रुप:": "Blood group:", "परिवार": "Family", "मेडिकल:": "Medical:", "पुलिस/एम्बुलेंस: 112": "Police/Ambulance: 112", "आपातकालीन जानकारी / EMERGENCY": "Emergency information / EMERGENCY", "नाम:": "Name:", "फ़ोन:": "Phone:", "पता:": "Address:", "लोकेशन:": "Location:", "ऊपर अपना लिंक डालिए।": "Enter your link above.", "कम से कम अपना नाम या फ़ोन नंबर डालिए।": "Enter at least your name or phone number.", "ऊपर QR में डालने वाली जानकारी भरिए।": "Fill in the information to put in the QR above.", "ऊपर चुने हुए प्रकार की जानकारी भरिए।": "Fill in the chosen type of information above.", "अभी रंगीन बैकग्राउंड है। ऊपर से अपनी फ़ोटो जोड़िए।": "The background is plain colour now. Add your photo above.", "उदाहरण लिंक भरा है, अपना डालिए।": "An example link is filled in; enter your own.", "अभी कोई लोगो नहीं है। ऊपर से अपना लोगो अपलोड कीजिए या कोई आइकन चुनिए।": "There is no logo yet. Upload your logo above or pick an icon.", "QR बनाने वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर पेज रीफ्रेश कीजिए।": "The QR maker did not load. Check your internet and refresh the page.", "जानकारी QR के लिए बहुत ज़्यादा है। टेक्स्ट छोटा कीजिए।": "The information is too long for a QR. Shorten the text.", "जानकारी बहुत ज़्यादा है, इसलिए बीच में लोगो नहीं लग सका। जानकारी छोटी कीजिए।": "The information is too long, so the centre logo could not be added. Shorten it.", "सामान्य": "Normal", "घना": "Dense", "बहुत घना": "Very dense", "बाइट · घनत्व:": "bytes · density:", "· जानकारी छोटी करें, तभी छोटे स्टिकर पर स्कैन होगा": "· Shorten the information so it scans on a small sticker", "· स्कैन करने पर पहले \"QR साथी से बना\" पेज खुलेगा, फिर आपका लिंक": "· When scanned, a \"Made with QR Saathi\" page opens first, then your link", "· बीच में लोगो के लिए QR मज़बूत मोड (": "· The QR uses strong mode for the centre logo (", ") में बना है": ")", "बिंदुओं का रंग बैकग्राउंड से गहरा रखिए, वरना कई फ़ोन स्कैन नहीं कर पाएँगे।": "Keep the dots darker than the background, or many phones will not be able to scan.", "रंग आपस में बहुत मिलते हैं। स्कैन आसान रखने के लिए बिंदु और गहरे या बैकग्राउंड और हल्का कीजिए।": "The colours are too similar. For easier scanning, make the dots darker or the background lighter.", "फ़ोटो पोस्टर सेव / शेयर करें": "Save / Share photo poster", "स्टिकर सेव / शेयर करें": "Save / Share sticker", "पोस्टर सेव / शेयर करें": "Save / Share poster", "फ़ोटो बनाने में दिक्कत आई। फिर कोशिश कीजिए।": "There was a problem making the image. Try again.", "सेव हो गया। डाउनलोड फ़ोल्डर या गैलरी देखिए।": "Saved. Check your Downloads folder or gallery.", "QR साथी से बनाया": "Made with QR Saathi", "शेयर नहीं हो सका। पहले सेव कीजिए।": "Could not share. Save it first.", "QR साथी: मुफ़्त में QR बनाइए। अपनी फ़ोटो के साथ, बाइक स्टिकर, लिंक और लोकेशन, सब कुछ।": "QR Saathi: make QR codes free. With your own photo, bike stickers, links and location, and more.", "शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।": "To get a share link, first put the site on GitHub Pages.", "कॉपी नहीं हो सका। लिंक ख़ुद चुनकर कॉपी कीजिए:": "Could not copy. Select the link yourself and copy it:", "लिंक कॉपी हो गया।": "Link copied.", "लिंक कॉपी हो गया। Instagram की चैट या स्टोरी में चिपकाइए।": "Link copied. Paste it in an Instagram chat or story.", "मुफ़्त QR बनाइए। फ़ोन में ऐप की तरह इंस्टॉल कीजिए।": "Make QR codes free. Install it like an app on your phone.", "QR कोड को स्कैन कीजिए": "Scan the QR code", "साइट खुलने पर \"इंस्टॉल करें\" दबाइए": "Tap \"Install app\" when the site opens", "यह फ़ाइल फ़ोटो नहीं लगती। दूसरी चुनिए।": "This file does not look like a photo. Choose another.", "फ़ोटो बहुत बड़ी है। 30 MB से छोटी चुनिए।": "The photo is too large. Choose one under 30 MB.", "यह फ़ोटो खुल नहीं पाई। दूसरी फ़ोटो चुनिए।": "This photo could not be opened. Choose another photo.", "फ़ाइल बहुत बड़ी है। 20 MB से छोटी चुनिए।": "The file is too large. Choose one under 20 MB.", "यह फ़ाइल खुल नहीं पाई। दूसरी चुनिए।": "This file could not be opened. Choose another.", "वाई-फ़ाई": "Wi-Fi", "कॉन्टैक्ट कार्ड": "Contact card", "वेबसाइट:": "Website:", "लिंक खोलें": "Open link", "कॉल करें": "Call", "ईमेल भेजें": "Send email", "मैप में खोलें": "Open in maps", "नेटवर्क का नाम कॉपी करें": "Copy network name", "नाम कॉपी हो गया।": "Name copied.", "पासवर्ड कॉपी करें": "Copy password", "पासवर्ड कॉपी हो गया।": "Password copied.", "पूरा टेक्स्ट कॉपी करें": "Copy full text", "कॉपी हो गया।": "Copied.", "दोबारा स्कैन करें": "Scan again", "QR मिल गया।": "QR found.", "इस ब्राउज़र में कैमरा नहीं चल सकता। Chrome या Safari में साइट खोलिए, या नीचे से QR की फ़ोटो चुनिए।": "The camera cannot run in this browser. Open the site in Chrome or Safari, or choose a QR photo below.", "कैमरा खुल रहा है…": "Opening the camera…", "QR को चौकोर फ्रेम के अंदर लाइए। थोड़ा दूर और सीधा रखिए।": "Bring the QR inside the square frame. Hold it a little farther and straight.", "कैमरे की अनुमति नहीं मिली। ब्राउज़र की सेटिंग में इस साइट के लिए कैमरा चालू कीजिए, या नीचे से QR की फ़ोटो चुनिए।": "Camera permission was not given. Turn on the camera for this site in your browser settings, or choose a QR photo below.", "इस फ़ोन में कैमरा नहीं मिला। नीचे से QR की फ़ोटो चुनिए।": "No camera was found on this phone. Choose a QR photo below.", "कैमरा किसी दूसरे ऐप में चालू है। उसे बंद करके फिर कोशिश कीजिए।": "The camera is in use by another app. Close it and try again.", "स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।": "The scanner part did not load. Check your internet and try again.", "कैमरा चालू नहीं हो सका। साइट को Chrome या Safari में खोलिए (Instagram या WhatsApp के अंदर नहीं), या नीचे से QR की फ़ोटो चुनिए।": "The camera could not start. Open the site in Chrome or Safari (not inside Instagram or WhatsApp), or choose a QR photo below.", "फ़ोटो पढ़ रहे हैं…": "Reading the photo…", "इस फ़ोटो में QR नहीं मिला। साफ़ और सीधी फ़ोटो चुनिए।": "No QR was found in this photo. Choose a clear, straight photo.", "यह फ़ोटो खुल नहीं पाई। दूसरी चुनिए।": "This photo could not be opened. Choose another.", "कैमरा बंद है।": "The camera is off.", "इस फ़ोन में टॉर्च नहीं चल सकी।": "The torch could not be used on this phone.", "कैमरा बंद हो गया। दोबारा चालू कीजिए।": "The camera was turned off. Turn it on again.", "इस ब्राउज़र में लोकेशन उपलब्ध नहीं है।": "Location is not available in this browser.", "लोकेशन ढूँढ रहे हैं…": "Finding your location…", "लोकेशन भर गई।": "Location filled in.", "लोकेशन की अनुमति नहीं मिली। मैप लिंक ख़ुद चिपकाइए।": "Location permission was not given. Paste the map link yourself.", "जैसे:": "e.g.:", "रंग": "Colour", "iPhone में: नीचे Share (वर्ग और ऊपर तीर) दबाइए, फिर \"Add to Home Screen\" चुनिए।": "On iPhone: tap Share below (a square with an arrow), then choose \"Add to Home Screen\".", "फ़ोन में ऐप की तरह खुलेगा और ऑफ़लाइन भी चलेगा।": "It opens like an app on your phone and also works offline.", "ठीक है": "OK", "लिंक कॉपी हो गया": "Link copied", "कॉपी नहीं हुआ:": "Could not copy:", "शेयर बाज़ार हिंदी में सीखिए": "Learn the stock market in Hindi", "शेयर बाज़ार की नींव मुफ़्त सीखिए, फिर इंट्राडे ट्रेडिंग का कोर्स। हिंदी और English में।": "Learn stock market basics free, then an intraday trading course. In Hindi and English.", "बिल और उधारी खाता, सब मोबाइल में": "Bills and credit ledger, all on mobile", "बिल बनाइए, उधारी का हिसाब रखिए, PDF और WhatsApp पर भेजिए। डेटा सिर्फ़ आपके फ़ोन में।": "Make bills, keep credit accounts, and send PDFs on WhatsApp. Data stays only on your phone.", "आग से बचना और बचाना सीखिए": "Learn to prevent and fight fire", "आग से बचाव का हिंदी कोर्स: 7 अध्याय, 50 सवालों की परीक्षा और सर्टिफ़िकेट।": "A Hindi fire-safety course: 7 chapters, a 50-question test and a certificate.", "जीवन करियर रोडमैप": "Life Career Roadmap", "5 से 65 साल तक का करियर नक्शा": "A career map from age 5 to 65", "हर उम्र में क्या करें, पैसा, स्किल और किस से बचें। ग्राफ़ और PDF के साथ, मुफ़्त।": "What to do at every age, money, skills and what to avoid. With graphs and PDF, free.", "QR साथी – मुफ़्त QR बनाइए": "QR Saathi – Free QR maker", "मुफ़्त QR बनाने का टूल: लिंक, इमरजेंसी कार्ड और फ़ोटो वाला QR। फ़ोन में ऐप की तरह इंस्टॉल करें।": "A free QR maker: links, emergency card and photo QR. Install on your phone like an app.", "लिंक डालिए": "Add your link", "पोस्टर चुनिए": "Choose the poster", "आपकी पहचान": "Who you are", "घरवालों के नंबर": "Family contacts", "पता और लोकेशन": "Address and location", "मेडिकल और आउटपुट": "Medical info and output", "फ़ोटो चुनिए": "Choose your photo", "QR की जानकारी": "QR content", "पोस्टर का टेक्स्ट": "Poster text", "लोगो चुनिए": "Choose a logo", "स्टिकर का टेक्स्ट": "Sticker text", "प्रीव्यू और सेव": "Preview and save", "कदम": "Step", "पीछे": "Back", "आगे": "Next", "पहले यह जानकारी भरिए।": "Please fill this in first."};
+  var lang = 'hi';
+  try { var sv = localStorage.getItem('qrs_lang'); if (sv === 'en' || sv === 'hi') lang = sv; } catch (e) { /* ignore */ }
+  function norm(t) { return String(t).replace(/\s+/g, ' ').trim(); }
+  function tr(s) {
+    if (lang !== 'en' || !s) return s;
+    var m = /^(\s*)([\s\S]*?)(\s*)$/.exec(s), e = D[norm(m[2])];
+    return e === undefined ? s : m[1] + e + m[3];
+  }
+  var reg = [], hooks = [];
+  var ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+  function scan() {
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null), n;
+    while ((n = w.nextNode())) {
+      if (n.nodeType === 3) {
+        var p = n.parentNode.nodeName;
+        if (p === 'SCRIPT' || p === 'STYLE') continue;
+        var t = norm(n.nodeValue);
+        if (t && D[t] !== undefined) reg.push({ n: n, a: null, o: n.nodeValue, last: n.nodeValue });
+      } else {
+        ATTRS.forEach(function (a) {
+          var v = n.getAttribute(a);
+          if (v && D[norm(v)] !== undefined) reg.push({ n: n, a: a, o: v, last: v });
+        });
+      }
+    }
+  }
+  function apply() {
+    reg.forEach(function (r) {
+      var cur = r.a ? r.n.getAttribute(r.a) : r.n.nodeValue;
+      if (cur !== r.last) return;
+      var v = tr(r.o);
+      if (r.a) r.n.setAttribute(r.a, v); else r.n.nodeValue = v;
+      r.last = v;
+    });
+    var T = document.querySelector('title'); if (T) T.textContent = tr('QR साथी');
+    var M = document.querySelector('meta[name="description"]');
+    if (M) { if (!M._o) M._o = M.getAttribute('content'); M.setAttribute('content', tr(M._o)); }
+    document.documentElement.lang = lang;
+    var b = document.getElementById('btnLang');
+    if (b) { b.textContent = lang === 'en' ? 'हिन्दी' : 'English'; b.setAttribute('aria-label', lang === 'en' ? 'भाषा: हिन्दी में बदलें' : 'Language: switch to English'); b.setAttribute('lang', lang === 'en' ? 'hi' : 'en'); }
+  }
+  function setLang(l) {
+    lang = l === 'en' ? 'en' : 'hi';
+    try { localStorage.setItem('qrs_lang', lang); } catch (e) { /* ignore */ }
+    apply();
+    hooks.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } });
+  }
+  window.tr = tr;
+  window.QRLang = {
+    get: function () { return lang; },
+    set: setLang,
+    onChange: function (f) { hooks.push(f); },
+    init: function () {
+      scan(); apply();
+      var b = document.getElementById('btnLang');
+      if (b) b.addEventListener('click', function () { setLang(lang === 'en' ? 'hi' : 'en'); });
+    }
+  };
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
 (function () {
   'use strict';
+  var tr = window.tr;
   var $ = function (id) { return document.getElementById(id); };
 
   // ---- ब्रांड: बदलना हो तो सिर्फ़ यहाँ बदलिए ----
   var BRAND_PLATFORM = 'Instagram';
   var BRAND_HANDLE = '@Rajan03jha';
-  var BRAND_LINE = 'QR साथी ऐप से बना · ' + BRAND_PLATFORM + ' ' + BRAND_HANDLE;
+  function brandLine() { return tr('QR साथी ऐप से बना · ') + BRAND_PLATFORM + ' ' + BRAND_HANDLE; }
   // अपना डोमेन हो तो यहाँ पूरा पता डालिए, जैसे 'https://qr.mysite.com/'. खाली रहने पर पेज का अपना पता लिया जाता है।
   var SITE_BASE = '';
 
@@ -837,12 +943,12 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   var BODYFAM = '"Hind",sans-serif';
 
   var TPL = {
-    video:  { bg1: '#b3121a', bg2: '#2b0408', ink: '#ffffff', dot: '#b3121a', head: 'वीडियो देखने के लिए स्कैन करें', sub: 'हमारा चैनल देखें और सब्सक्राइब करें', foot: 'कैमरा या Google Lens से स्कैन करें' },
-    social: { bg1: '#f43f8e', bg2: '#ff8a3d', ink: '#ffffff', dot: '#8a1650', head: 'हमें फ़ॉलो करें', sub: 'स्कैन करें और हमसे जुड़ें', foot: 'कैमरा या Google Lens से स्कैन करें' },
-    app:    { bg1: '#1a3f9c', bg2: '#071433', ink: '#ffffff', dot: '#0f2a6b', head: 'ऐप डाउनलोड करें', sub: 'स्कैन करें और अभी इंस्टॉल करें', foot: 'कैमरा या Google Lens से स्कैन करें' },
-    card:   { bg1: '#e7f3ee', bg2: '#c9e3d7', ink: '#0b3b2e', dot: '#0b3b2e', head: 'हमसे जुड़ें', sub: 'हमारी जानकारी पाने के लिए स्कैन करें', foot: 'कैमरा या Google Lens से स्कैन करें' },
+    video:  { bg1: '#b3121a', bg2: '#2b0408', ink: '#ffffff', dot: '#b3121a', get head() { return tr('वीडियो देखने के लिए स्कैन करें'); }, get sub() { return tr('हमारा चैनल देखें और सब्सक्राइब करें'); }, get foot() { return tr('कैमरा या Google Lens से स्कैन करें'); } },
+    social: { bg1: '#f43f8e', bg2: '#ff8a3d', ink: '#ffffff', dot: '#8a1650', get head() { return tr('हमें फ़ॉलो करें'); }, get sub() { return tr('स्कैन करें और हमसे जुड़ें'); }, get foot() { return tr('कैमरा या Google Lens से स्कैन करें'); } },
+    app:    { bg1: '#1a3f9c', bg2: '#071433', ink: '#ffffff', dot: '#0f2a6b', get head() { return tr('ऐप डाउनलोड करें'); }, get sub() { return tr('स्कैन करें और अभी इंस्टॉल करें'); }, get foot() { return tr('कैमरा या Google Lens से स्कैन करें'); } },
+    card:   { bg1: '#e7f3ee', bg2: '#c9e3d7', ink: '#0b3b2e', dot: '#0b3b2e', get head() { return tr('हमसे जुड़ें'); }, get sub() { return tr('हमारी जानकारी पाने के लिए स्कैन करें'); }, get foot() { return tr('कैमरा या Google Lens से स्कैन करें'); } },
     plain:  { dot: '#0b1a24' },
-    sos:    { bg1: '#fff5f3', bg2: '#ffd3cb', ink: '#7a0a18', dot: '#7a0a18', head: 'दुर्घटना हो तो स्कैन करें', sub: '', foot: 'फ़ोन नंबर और पता स्कैन करने पर दिखेगा', subSize: 52 }
+    sos:    { bg1: '#fff5f3', bg2: '#ffd3cb', ink: '#7a0a18', dot: '#7a0a18', get head() { return tr('दुर्घटना हो तो स्कैन करें'); }, sub: '', get foot() { return tr('फ़ोन नंबर और पता स्कैन करने पर दिखेगा'); }, subSize: 52 }
   };
   var SWATCH = ['#0b1a24', '#b3121a', '#0f766e', '#1d4ed8', '#6d28d9', '#b45309'];
   var tab = '1';
@@ -903,7 +1009,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       var base = siteBase();
       return base ? base + 'go.html#u=' + encodeURIComponent(s) : s;
     }
-    return s + '\n\n— ' + BRAND_LINE;
+    return s + '\n\n— ' + brandLine();
   }
 
   /* ---------- पेलोड बनाना ---------- */
@@ -919,31 +1025,31 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     var addr = [val('eAddr'), val('eCity')].filter(Boolean).join(', ');
     var lines;
     if (val('eType') === 'vcard') {
-      lines = ['BEGIN:VCARD', 'VERSION:3.0', 'FN:' + vesc(val('eName') || 'आपातकालीन संपर्क')];
+      lines = ['BEGIN:VCARD', 'VERSION:3.0', 'FN:' + vesc(val('eName') || tr('आपातकालीन संपर्क'))];
       if (val('ePhone')) lines.push('TEL;TYPE=CELL:' + val('ePhone'));
       fam.forEach(function (f) { lines.push('TEL;TYPE=HOME:' + f[1]); });
       if (addr) lines.push('ADR;TYPE=HOME:;;' + vesc(val('eAddr')) + ';' + vesc(val('eCity')) + ';;;');
       if (map) lines.push('URL:' + map);
       var notes = [];
-      if (val('eBlood')) notes.push('ब्लड ग्रुप: ' + val('eBlood'));
-      fam.forEach(function (f) { notes.push('परिवार' + (f[0] ? ' (' + f[0] + ')' : '') + ': ' + f[1]); });
-      if (val('eNote')) notes.push('मेडिकल: ' + val('eNote'));
-      notes.push('पुलिस/एम्बुलेंस: 112');
-      notes.push(BRAND_LINE);
+      if (val('eBlood')) notes.push(tr('ब्लड ग्रुप: ') + val('eBlood'));
+      fam.forEach(function (f) { notes.push(tr('परिवार') + (f[0] ? ' (' + f[0] + ')' : '') + ': ' + f[1]); });
+      if (val('eNote')) notes.push(tr('मेडिकल: ') + val('eNote'));
+      notes.push(tr('पुलिस/एम्बुलेंस: 112'));
+      notes.push(brandLine());
       lines.push('NOTE:' + vesc(notes.join('\n')));
       lines.push('END:VCARD');
       return lines.join('\n');
     }
-    lines = ['आपातकालीन जानकारी / EMERGENCY'];
-    if (val('eName')) lines.push('नाम: ' + val('eName'));
-    if (val('eBlood')) lines.push('ब्लड ग्रुप: ' + val('eBlood'));
-    if (val('ePhone')) lines.push('फ़ोन: ' + val('ePhone'));
-    fam.forEach(function (f) { lines.push('परिवार' + (f[0] ? ' (' + f[0] + ')' : '') + ': ' + f[1]); });
-    if (addr) lines.push('पता: ' + addr);
-    if (map) lines.push('लोकेशन: ' + map);
-    if (val('eNote')) lines.push('मेडिकल: ' + val('eNote'));
-    lines.push('पुलिस/एम्बुलेंस: 112');
-    lines.push(BRAND_LINE);
+    lines = [tr('आपातकालीन जानकारी / EMERGENCY')];
+    if (val('eName')) lines.push(tr('नाम: ') + val('eName'));
+    if (val('eBlood')) lines.push(tr('ब्लड ग्रुप: ') + val('eBlood'));
+    if (val('ePhone')) lines.push(tr('फ़ोन: ') + val('ePhone'));
+    fam.forEach(function (f) { lines.push(tr('परिवार') + (f[0] ? ' (' + f[0] + ')' : '') + ': ' + f[1]); });
+    if (addr) lines.push(tr('पता: ') + addr);
+    if (map) lines.push(tr('लोकेशन: ') + map);
+    if (val('eNote')) lines.push(tr('मेडिकल: ') + val('eNote'));
+    lines.push(tr('पुलिस/एम्बुलेंस: 112'));
+    lines.push(brandLine());
     return lines.join('\n');
   }
   function ctype() { return document.querySelector('input[name="ctype"]:checked').value; }
@@ -973,7 +1079,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
         if (val('cEmail')) L.push('EMAIL:' + val('cEmail'));
         if (val('cWeb')) L.push('URL:' + normUrl(val('cWeb')));
         if (val('cAddr')) L.push('ADR;TYPE=WORK:;;' + vesc(val('cAddr')) + ';;;;');
-        L.push('NOTE:' + vesc(BRAND_LINE));
+        L.push('NOTE:' + vesc(brandLine()));
         L.push('END:VCARD');
         return L.join('\n');
       case 'text': return finalize(val('p3Text'));
@@ -1414,17 +1520,17 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
         th.head = val('headText'); th.sub = val('subText');
       }
       return { kind: 'poster', payload: finalize(normUrl($('linkUrl').value)), th: th, poster: !!th, shape: shape, fg: fg, bg: bg,
-        file: 'qr-saathi-poster.png', empty: 'ऊपर अपना लिंक डालिए।' };
+        file: 'qr-saathi-poster.png', empty: tr('ऊपर अपना लिंक डालिए।') };
     }
     if (tab === '2') {
       var name = val('eName'), blood = val('eBlood'), th2 = null;
       if ($('eSticker').value === 'sticker') {
         th2 = {};
         for (var k in TPL.sos) th2[k] = TPL.sos[k];
-        th2.sub = [name, blood ? 'ब्लड ग्रुप ' + blood : ''].filter(Boolean).join(' · ');
+        th2.sub = [name, blood ? tr('ब्लड ग्रुप ') + blood : ''].filter(Boolean).join(' · ');
       }
       return { kind: 'poster', payload: (name || val('ePhone')) ? emergencyPayload() : '', th: th2, poster: !!th2, shape: shape, fg: fg, bg: bg,
-        file: 'qr-saathi-emergency-sticker.png', empty: 'कम से कम अपना नाम या फ़ोन नंबर डालिए।' };
+        file: 'qr-saathi-emergency-sticker.png', empty: tr('कम से कम अपना नाम या फ़ोन नंबर डालिए।') };
     }
     if (tab === '4') {
       var lt = $('lgType').value, lv = val('lgVal'), pl = '';
@@ -1436,11 +1542,11 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       }
       var lay = lgLayout();
       return { kind: 'logo', payload: pl, poster: lay !== 'qr', shape: shape, fg: fg, bg: bg, file: 'qr-saathi-logo-sticker.png',
-        empty: 'ऊपर QR में डालने वाली जानकारी भरिए।',
+        empty: tr('ऊपर QR में डालने वाली जानकारी भरिए।'),
         l4: { layout: lay, name: val('lgName'), sub: val('lgSub'), scan: val('lgScan'), bg: $('lgBg').value, icon: lgIcon(), iconColor: $('lgIconColor').value } };
     }
     return { kind: 'photo', payload: p3Payload(), poster: true, shape: shape, fg: fg, bg: bg, file: 'qr-saathi-photo-qr.png',
-      empty: 'ऊपर चुने हुए प्रकार की जानकारी भरिए।',
+      empty: tr('ऊपर चुने हुए प्रकार की जानकारी भरिए।'),
       p3: { head: val('p3Head'), sub: val('p3Sub'), scan: val('p3Scan'), layout: $('p3Layout').value, ov: $('ovType').value, amt: +$('ovAmt').value } };
   }
   function showError(t) {
@@ -1458,24 +1564,24 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     $('ovField').hidden = !bgLayout; $('ovAmtField').hidden = !bgLayout;
     if (tab === '3') {
       var hints = [];
-      if (!photo) hints.push('अभी रंगीन बैकग्राउंड है। ऊपर से अपनी फ़ोटो जोड़िए।');
-      if (ctype() === 'url' && val('p3Url') === SAMPLE_URL) hints.push('उदाहरण लिंक भरा है, अपना डालिए।');
+      if (!photo) hints.push(tr('अभी रंगीन बैकग्राउंड है। ऊपर से अपनी फ़ोटो जोड़िए।'));
+      if (ctype() === 'url' && val('p3Url') === SAMPLE_URL) hints.push(tr('उदाहरण लिंक भरा है, अपना डालिए।'));
       $('p3Hint').textContent = hints.join(' '); $('p3Hint').hidden = !hints.length;
     }
     if (tab === '4') {
       var h4 = [];
-      if (!lgLogo && lgIcon() === 'none') h4.push('अभी कोई लोगो नहीं है। ऊपर से अपना लोगो अपलोड कीजिए या कोई आइकन चुनिए।');
+      if (!lgLogo && lgIcon() === 'none') h4.push(tr('अभी कोई लोगो नहीं है। ऊपर से अपना लोगो अपलोड कीजिए या कोई आइकन चुनिए।'));
       $('p4Hint').textContent = h4.join(' '); $('p4Hint').hidden = !h4.length;
     }
     var m = build();
-    if (typeof qrcode === 'undefined') { showError('QR बनाने वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर पेज रीफ्रेश कीजिए।'); return; }
+    if (typeof qrcode === 'undefined') { showError(tr('QR बनाने वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर पेज रीफ्रेश कीजिए।')); return; }
     if (!m.payload) { showError(m.empty); return; }
     var wantCenter = m.kind === 'logo' && m.l4.layout !== 'top' && (!!lgLogo || m.l4.icon !== 'none');
     var res = wantCenter ? makeQR(m.payload, ['H', 'Q', 'M']) : null, noLogo = false;
     if (!res) { res = makeQR(m.payload); noLogo = wantCenter; }
-    if (!res) { showError('जानकारी QR के लिए बहुत ज़्यादा है। टेक्स्ट छोटा कीजिए।'); return; }
+    if (!res) { showError(tr('जानकारी QR के लिए बहुत ज़्यादा है। टेक्स्ट छोटा कीजिए।')); return; }
     m.lvl = res.lvl; m.logoOn = wantCenter && !noLogo;
-    if (noLogo) { $('p4Hint').textContent = 'जानकारी बहुत ज़्यादा है, इसलिए बीच में लोगो नहीं लग सका। जानकारी छोटी कीजिए।'; $('p4Hint').hidden = false; }
+    if (noLogo) { $('p4Hint').textContent = tr('जानकारी बहुत ज़्यादा है, इसलिए बीच में लोगो नहीं लग सका। जानकारी छोटी कीजिए।'); $('p4Hint').hidden = false; }
 
     $('errBox').hidden = true; cv.hidden = false;
     if (m.kind === 'photo') drawPhotoPoster(cv, res.q, m);
@@ -1485,21 +1591,21 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 
     var bytes = new TextEncoder().encode(m.payload).length;
     var ver = (res.q.getModuleCount() - 17) / 4;
-    var dens = ver <= 8 ? 'सामान्य' : ver <= 14 ? 'घना' : 'बहुत घना';
-    var meta = bytes + ' बाइट · घनत्व: ' + dens;
-    if (ver > 14) meta += ' · जानकारी छोटी करें, तभी छोटे स्टिकर पर स्कैन होगा';
+    var dens = ver <= 8 ? tr('सामान्य') : ver <= 14 ? tr('घना') : tr('बहुत घना');
+    var meta = bytes + tr(' बाइट · घनत्व: ') + dens;
+    if (ver > 14) meta += tr(' · जानकारी छोटी करें, तभी छोटे स्टिकर पर स्कैन होगा');
     var base = siteBase();
-    if (base && m.payload.indexOf(base + 'go.html#u=') === 0) meta += ' · स्कैन करने पर पहले "QR साथी से बना" पेज खुलेगा, फिर आपका लिंक';
-    if (m.kind === 'logo' && m.logoOn) meta += ' · बीच में लोगो के लिए QR मज़बूत मोड (' + res.lvl + ') में बना है';
+    if (base && m.payload.indexOf(base + 'go.html#u=') === 0) meta += tr(' · स्कैन करने पर पहले "QR साथी से बना" पेज खुलेगा, फिर आपका लिंक');
+    if (m.kind === 'logo' && m.logoOn) meta += tr(' · बीच में लोगो के लिए QR मज़बूत मोड (') + res.lvl + tr(') में बना है');
     $('meta').textContent = meta;
     $('payloadView').textContent = m.payload;
 
     var warn = '', cr = ratio(m.fg, m.bg);
-    if (lum(m.fg) > lum(m.bg)) warn = 'बिंदुओं का रंग बैकग्राउंड से गहरा रखिए, वरना कई फ़ोन स्कैन नहीं कर पाएँगे।';
-    else if (cr < 4) warn = 'रंग आपस में बहुत मिलते हैं। स्कैन आसान रखने के लिए बिंदु और गहरे या बैकग्राउंड और हल्का कीजिए।';
+    if (lum(m.fg) > lum(m.bg)) warn = tr('बिंदुओं का रंग बैकग्राउंड से गहरा रखिए, वरना कई फ़ोन स्कैन नहीं कर पाएँगे।');
+    else if (cr < 4) warn = tr('रंग आपस में बहुत मिलते हैं। स्कैन आसान रखने के लिए बिंदु और गहरे या बैकग्राउंड और हल्का कीजिए।');
     $('styleWarn').textContent = warn; $('styleWarn').hidden = !warn;
 
-    $('btnMain').textContent = m.kind === 'photo' ? 'फ़ोटो पोस्टर सेव / शेयर करें' : m.kind === 'logo' ? (m.poster ? 'स्टिकर सेव / शेयर करें' : 'QR सेव / शेयर करें') : (m.th ? (tab === '2' ? 'स्टिकर सेव / शेयर करें' : 'पोस्टर सेव / शेयर करें') : 'QR सेव / शेयर करें');
+    $('btnMain').textContent = m.kind === 'photo' ? tr('फ़ोटो पोस्टर सेव / शेयर करें') : m.kind === 'logo' ? (m.poster ? tr('स्टिकर सेव / शेयर करें') : tr('QR सेव / शेयर करें')) : (m.th ? (tab === '2' ? tr('स्टिकर सेव / शेयर करें') : tr('पोस्टर सेव / शेयर करें')) : tr('QR सेव / शेयर करें'));
     $('btnMain').disabled = false;
     $('btnQR').hidden = !m.poster;
     $('btnQR').disabled = false;
@@ -1527,7 +1633,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       }
     }
     canvas.toBlob(function (blob) {
-      if (!blob) { toast('फ़ोटो बनाने में दिक्कत आई। फिर कोशिश कीजिए।'); return; }
+      if (!blob) { toast(tr('फ़ोटो बनाने में दिक्कत आई। फिर कोशिश कीजिए।')); return; }
       closeSheet(true);
       sheetBlob = blob; sheetName = name; sheetUrl = URL.createObjectURL(blob);
       $('shImg').src = sheetUrl;
@@ -1553,14 +1659,14 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     var a = document.createElement('a');
     a.href = sheetUrl; a.download = sheetName;
     document.body.appendChild(a); a.click(); a.remove();
-    toast('सेव हो गया। डाउनलोड फ़ोल्डर या गैलरी देखिए।');
+    toast(tr('सेव हो गया। डाउनलोड फ़ोल्डर या गैलरी देखिए।'));
   });
   $('shShare').addEventListener('click', function () {
     if (!sheetBlob) return;
     var f = new File([sheetBlob], sheetName, { type: 'image/png' });
     var u = siteBase();
-    navigator.share({ files: [f], title: 'QR साथी', text: 'QR साथी से बनाया' + (u ? ': ' + u : '') }).catch(function (e) {
-      if (e && e.name !== 'AbortError') toast('शेयर नहीं हो सका। पहले सेव कीजिए।');
+    navigator.share({ files: [f], title: tr('QR साथी'), text: tr('QR साथी से बनाया') + (u ? ': ' + u : '') }).catch(function (e) {
+      if (e && e.name !== 'AbortError') toast(tr('शेयर नहीं हो सका। पहले सेव कीजिए।'));
     });
   });
   $('shClose').addEventListener('click', function () { closeSheet(false); });
@@ -1570,15 +1676,15 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   $('btnQR').addEventListener('click', function () { openSheet('qr'); });
 
   /* ---------- ऐप शेयर ---------- */
-  var SHARE_TEXT = 'QR साथी: मुफ़्त में QR बनाइए। अपनी फ़ोटो के साथ, बाइक स्टिकर, लिंक और लोकेशन, सब कुछ।';
+  function shareText() { return tr('QR साथी: मुफ़्त में QR बनाइए। अपनी फ़ोटो के साथ, बाइक स्टिकर, लिंक और लोकेशन, सब कुछ।'); }
   function setupShare() {
-    var u = siteBase(), full = u ? SHARE_TEXT + ' ' + u : SHARE_TEXT;
+    var u = siteBase(), full = u ? shareText() + ' ' + u : shareText();
     $('shWa').href = 'https://wa.me/?text=' + encodeURIComponent(full);
-    $('shTg').href = 'https://t.me/share/url?url=' + encodeURIComponent(u) + '&text=' + encodeURIComponent(SHARE_TEXT);
+    $('shTg').href = 'https://t.me/share/url?url=' + encodeURIComponent(u) + '&text=' + encodeURIComponent(shareText());
     $('shFb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(u);
     ['shWa', 'shTg', 'shFb'].forEach(function (id) {
       $(id).addEventListener('click', function (e) {
-        if (!siteBase()) { e.preventDefault(); toast('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।'); }
+        if (!siteBase()) { e.preventDefault(); toast(tr('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।')); }
       });
     });
     if (navigator.share) $('shNative').hidden = false;
@@ -1591,25 +1697,25 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       var ok = false;
       try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
       ta.remove();
-      toast(ok ? okMsg : 'कॉपी नहीं हो सका। लिंक ख़ुद चुनकर कॉपी कीजिए: ' + t);
+      toast(ok ? okMsg : tr('कॉपी नहीं हो सका। लिंक ख़ुद चुनकर कॉपी कीजिए: ') + t);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { toast(okMsg); }, fallback);
     else fallback();
   }
   function nativeShareApp() {
     var u = siteBase();
-    if (!u) { toast('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।'); return; }
-    navigator.share({ title: 'QR साथी', text: SHARE_TEXT, url: u }).catch(function () {});
+    if (!u) { toast(tr('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।')); return; }
+    navigator.share({ title: tr('QR साथी'), text: shareText(), url: u }).catch(function () {});
   }
   $('shCopy').addEventListener('click', function () {
     var u = siteBase();
-    if (!u) { toast('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।'); return; }
-    copyText(u, 'लिंक कॉपी हो गया।');
+    if (!u) { toast(tr('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।')); return; }
+    copyText(u, tr('लिंक कॉपी हो गया।'));
   });
   $('shIg').addEventListener('click', function () {
     var u = siteBase();
-    if (!u) { toast('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।'); return; }
-    copyText(u, 'लिंक कॉपी हो गया। Instagram की चैट या स्टोरी में चिपकाइए।');
+    if (!u) { toast(tr('शेयर लिंक के लिए पहले साइट GitHub Pages पर डालिए।')); return; }
+    copyText(u, tr('लिंक कॉपी हो गया। Instagram की चैट या स्टोरी में चिपकाइए।'));
   });
   $('shNative').addEventListener('click', nativeShareApp);
   $('btnShareNav').addEventListener('click', function () {
@@ -1631,16 +1737,16 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     c.globalAlpha = 1;
     c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.fillStyle = '#ffffff';
     c.font = '800 96px ' + HEADFAM;
-    c.fillText('QR साथी', W / 2, 190);
+    c.fillText(tr('QR साथी'), W / 2, 190);
     c.font = '500 40px ' + BODYFAM;
-    wrap(c, 'मुफ़्त QR बनाइए। फ़ोन में ऐप की तरह इंस्टॉल कीजिए।', 860).forEach(function (l, i) { c.fillText(l, W / 2, 262 + i * 54); });
+    wrap(c, tr('मुफ़्त QR बनाइए। फ़ोन में ऐप की तरह इंस्टॉल कीजिए।'), 860).forEach(function (l, i) { c.fillText(l, W / 2, 262 + i * 54); });
     var tile = 600, tx = (W - tile) / 2, ty = 380;
     c.save();
     c.shadowColor = 'rgba(0,0,0,0.35)'; c.shadowBlur = 40; c.shadowOffsetY = 16;
     c.fillStyle = '#ffffff'; rr(c, tx, ty, tile, tile, tile * 0.045); c.fill();
     c.restore();
     drawQR(c, tx, ty, tile, q, 'round', '#0b1b2b', '#ffffff', tile * 0.045);
-    var py = ty + tile + 50, pillH = 76, label = 'QR कोड को स्कैन कीजिए';
+    var py = ty + tile + 50, pillH = 76, label = tr('QR कोड को स्कैन कीजिए');
     c.font = '600 36px ' + BODYFAM;
     var pw = Math.min(c.measureText(label).width + 90, W - 80);
     c.fillStyle = 'rgba(255,255,255,0.96)';
@@ -1649,7 +1755,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     c.fillText(label, W / 2, py + pillH / 2 + 12);
     c.fillStyle = '#ffffff';
     c.font = '500 34px ' + BODYFAM;
-    c.fillText('साइट खुलने पर "इंस्टॉल करें" दबाइए', W / 2, py + pillH + 72);
+    c.fillText(tr('साइट खुलने पर "इंस्टॉल करें" दबाइए'), W / 2, py + pillH + 72);
     watermark(c, W, H);
   }
   function setupAppQR() {
@@ -1663,7 +1769,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   $('appQrSave').addEventListener('click', function () { openSheet('app', $('appCv'), 'qr-saathi-app-qr.png'); });
 
   /* ---------- फ़ोटो (लेवल 3) ---------- */
-  function photoMsg(t) { $('photoMsg').textContent = t || 'फ़ोटो आपके फ़ोन में ही रहती है, कहीं अपलोड नहीं होती।'; }
+  function photoMsg(t) { $('photoMsg').textContent = t || tr('फ़ोटो आपके फ़ोन में ही रहती है, कहीं अपलोड नहीं होती।'); }
   function updateThumb() {
     var t = $('thumb');
     if (!photo) { t.hidden = true; $('photoClear').hidden = true; return; }
@@ -1674,8 +1780,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   }
   function loadPhoto(file) {
     if (!file) return;
-    if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|heic|heif|gif|bmp)$/i.test(file.name)) { photoMsg('यह फ़ाइल फ़ोटो नहीं लगती। दूसरी चुनिए।'); return; }
-    if (file.size > 30 * 1024 * 1024) { photoMsg('फ़ोटो बहुत बड़ी है। 30 MB से छोटी चुनिए।'); return; }
+    if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|heic|heif|gif|bmp)$/i.test(file.name)) { photoMsg(tr('यह फ़ाइल फ़ोटो नहीं लगती। दूसरी चुनिए।')); return; }
+    if (file.size > 30 * 1024 * 1024) { photoMsg(tr('फ़ोटो बहुत बड़ी है। 30 MB से छोटी चुनिए।')); return; }
     var url = URL.createObjectURL(file), img = new Image();
     img.onload = function () {
       var k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
@@ -1686,7 +1792,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       URL.revokeObjectURL(url);
       photo = cnv; updateThumb(); photoMsg(''); requestRender();
     };
-    img.onerror = function () { URL.revokeObjectURL(url); photoMsg('यह फ़ोटो खुल नहीं पाई। दूसरी फ़ोटो चुनिए।'); };
+    img.onerror = function () { URL.revokeObjectURL(url); photoMsg(tr('यह फ़ोटो खुल नहीं पाई। दूसरी फ़ोटो चुनिए।')); };
     img.src = url;
   }
   ['photoPick', 'photoCam'].forEach(function (id) {
@@ -1701,7 +1807,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   $('photoClear').addEventListener('click', function () { photo = null; updateThumb(); photoMsg(''); requestRender(); });
 
   /* ---------- लोगो अपलोड (लेवल 4) ---------- */
-  function lgMsg(t) { $('lgMsg').textContent = t || 'लोगो आपके फ़ोन में ही रहता है, कहीं अपलोड नहीं होता। अपलोड किया लोगो आइकन से ऊपर रहेगा।'; }
+  function lgMsg(t) { $('lgMsg').textContent = t || tr('लोगो आपके फ़ोन में ही रहता है, कहीं अपलोड नहीं होता। अपलोड किया लोगो आइकन से ऊपर रहेगा।'); }
   function updateLgThumb() {
     var t = $('lgThumb');
     if (!lgLogo) { t.hidden = true; $('lgClear').hidden = true; return; }
@@ -1714,8 +1820,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   }
   function loadLogo(file) {
     if (!file) return;
-    if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|svg|heic|heif|gif|bmp)$/i.test(file.name)) { lgMsg('यह फ़ाइल फ़ोटो नहीं लगती। दूसरी चुनिए।'); return; }
-    if (file.size > 20 * 1024 * 1024) { lgMsg('फ़ाइल बहुत बड़ी है। 20 MB से छोटी चुनिए।'); return; }
+    if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|svg|heic|heif|gif|bmp)$/i.test(file.name)) { lgMsg(tr('यह फ़ाइल फ़ोटो नहीं लगती। दूसरी चुनिए।')); return; }
+    if (file.size > 20 * 1024 * 1024) { lgMsg(tr('फ़ाइल बहुत बड़ी है। 20 MB से छोटी चुनिए।')); return; }
     var url = URL.createObjectURL(file), img = new Image();
     img.onload = function () {
       var iw = img.naturalWidth || 512, ih = img.naturalHeight || 512;
@@ -1726,19 +1832,19 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       URL.revokeObjectURL(url);
       lgLogo = cnv; updateLgThumb(); lgMsg(''); requestRender();
     };
-    img.onerror = function () { URL.revokeObjectURL(url); lgMsg('यह फ़ाइल खुल नहीं पाई। दूसरी चुनिए।'); };
+    img.onerror = function () { URL.revokeObjectURL(url); lgMsg(tr('यह फ़ाइल खुल नहीं पाई। दूसरी चुनिए।')); };
     img.src = url;
   }
   $('lgGal').addEventListener('click', function () { $('lgPick').click(); });
   $('lgPick').addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; loadLogo(f); });
   $('lgClear').addEventListener('click', function () { lgLogo = null; updateLgThumb(); lgMsg(''); requestRender(); });
   var LG_PH = { url: ['https://youtube.com/@aapkachannel', 'url'], phone: ['+91 98765 43210', 'tel'], wa: ['+91 98765 43210', 'tel'], text: ['जो भी स्कैन करने वाले को दिखाना है', 'text'] };
-  function lgTypeUi() { var p = LG_PH[$('lgType').value]; $('lgVal').placeholder = p[0]; $('lgVal').setAttribute('inputmode', p[1]); }
+  function lgTypeUi() { var p = LG_PH[$('lgType').value]; $('lgVal').placeholder = tr(p[0]); $('lgVal').setAttribute('inputmode', p[1]); }
   $('lgType').addEventListener('change', function () { $('lgVal').value = ''; lgTypeUi(); render(); });
   ['#101c26', '#b3121a', '#0f766e', '#1d4ed8', '#6d28d9', '#b45309', '#ffffff'].forEach(function (col) {
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'sw'; b.style.background = col;
-    b.setAttribute('aria-label', 'स्टिकर का रंग ' + col);
+    b.type = 'button'; b.className = 'sw'; b.style.background = col; b.setAttribute('data-col', col);
+    b.setAttribute('aria-label', tr('स्टिकर का रंग ') + col);
     b.addEventListener('click', function () { $('lgBg').value = col; render(); });
     $('lgSwatches').appendChild(b);
   });
@@ -1809,7 +1915,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     if (/^geo:/i.test(t)) return 'geo';
     return 'text';
   }
-  var SC_LABEL = { url: 'लिंक', tel: 'फ़ोन नंबर', mail: 'ईमेल', sms: 'SMS', wifi: 'वाई-फ़ाई', vcard: 'कॉन्टैक्ट कार्ड', geo: 'लोकेशन', text: 'टेक्स्ट' };
+  var SC_LABEL = { url: tr('लिंक'), tel: tr('फ़ोन नंबर'), mail: tr('ईमेल'), sms: 'SMS', wifi: tr('वाई-फ़ाई'), vcard: tr('कॉन्टैक्ट कार्ड'), geo: tr('लोकेशन'), text: tr('टेक्स्ट') };
   function wifiParse(t) {
     var o = {}, body = t.slice(5), parts = [], cur = '';
     for (var i = 0; i < body.length; i++) {
@@ -1838,29 +1944,29 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     var kind = scKind(t), host = '';
     $('scKind').textContent = SC_LABEL[kind];
     if (kind === 'url') { try { host = new URL(t).hostname; } catch (e) { host = ''; } }
-    $('scHost').hidden = !host; $('scHost').textContent = host ? 'वेबसाइट: ' + host : '';
+    $('scHost').hidden = !host; $('scHost').textContent = host ? tr('वेबसाइट: ') + host : '';
     $('scText').textContent = t;
     $('scActs').textContent = '';
-    if (kind === 'url') addLink('लिंक खोलें', t);
-    else if (kind === 'tel' && /^tel:\+?[\d\s\-()]+$/i.test(t)) addLink('कॉल करें', t);
-    else if (kind === 'mail' && /^mailto:[^\s]+$/i.test(t)) addLink('ईमेल भेजें', t);
+    if (kind === 'url') addLink(tr('लिंक खोलें'), t);
+    else if (kind === 'tel' && /^tel:\+?[\d\s\-()]+$/i.test(t)) addLink(tr('कॉल करें'), t);
+    else if (kind === 'mail' && /^mailto:[^\s]+$/i.test(t)) addLink(tr('ईमेल भेजें'), t);
     else if (kind === 'geo') {
       var g = /^geo:(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i.exec(t);
-      if (g) addLink('मैप में खोलें', 'https://maps.google.com/?q=' + g[1] + ',' + g[2]);
+      if (g) addLink(tr('मैप में खोलें'), 'https://maps.google.com/?q=' + g[1] + ',' + g[2]);
     } else if (kind === 'wifi') {
       var w = wifiParse(t);
-      if (w.S) addAct('नेटवर्क का नाम कॉपी करें', function () { copyText(w.S, 'नाम कॉपी हो गया।'); });
-      if (w.P) addAct('पासवर्ड कॉपी करें', function () { copyText(w.P, 'पासवर्ड कॉपी हो गया।'); });
+      if (w.S) addAct(tr('नेटवर्क का नाम कॉपी करें'), function () { copyText(w.S, tr('नाम कॉपी हो गया।')); });
+      if (w.P) addAct(tr('पासवर्ड कॉपी करें'), function () { copyText(w.P, tr('पासवर्ड कॉपी हो गया।')); });
     }
-    addAct('पूरा टेक्स्ट कॉपी करें', function () { copyText(t, 'कॉपी हो गया।'); }, true);
-    addAct('दोबारा स्कैन करें', function () { scStart(); }, true);
+    addAct(tr('पूरा टेक्स्ट कॉपी करें'), function () { copyText(t, tr('कॉपी हो गया।')); }, true);
+    addAct(tr('दोबारा स्कैन करें'), function () { scStart(); }, true);
     $('scResult').hidden = false;
     if ($('scResult').scrollIntoView) $('scResult').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   function scDone(t) {
     scStop();
     try { if (navigator.vibrate) navigator.vibrate(60); } catch (e) { /* ज़रूरी नहीं */ }
-    scMsg('QR मिल गया।');
+    scMsg(tr('QR मिल गया।'));
     scShow(t);
   }
   function scLoop() {
@@ -1883,10 +1989,10 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     if (scan.running) return;
     $('scResult').hidden = true;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      scMsg('इस ब्राउज़र में कैमरा नहीं चल सकता। Chrome या Safari में साइट खोलिए, या नीचे से QR की फ़ोटो चुनिए।', true);
+      scMsg(tr('इस ब्राउज़र में कैमरा नहीं चल सकता। Chrome या Safari में साइट खोलिए, या नीचे से QR की फ़ोटो चुनिए।'), true);
       return;
     }
-    scMsg('कैमरा खुल रहा है…');
+    scMsg(tr('कैमरा खुल रहा है…'));
     ensureDecoder().then(function () {
       return navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
     }).then(function (stream) {
@@ -1899,70 +2005,76 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
       $('scStart').hidden = true; $('scStop').hidden = false;
       var tr = scan.stream.getVideoTracks()[0], caps = (tr && tr.getCapabilities) ? tr.getCapabilities() : {};
       $('scTorch').hidden = !caps.torch;
-      scMsg('QR को चौकोर फ्रेम के अंदर लाइए। थोड़ा दूर और सीधा रखिए।');
+      scMsg(tr('QR को चौकोर फ्रेम के अंदर लाइए। थोड़ा दूर और सीधा रखिए।'));
       scan.running = true; scan.busy = false; scan.last = 0;
       scLoop();
     }).catch(function (e) {
       scStop();
       var n = e && e.name, m = e && e.message;
-      if (n === 'NotAllowedError' || n === 'SecurityError') scMsg('कैमरे की अनुमति नहीं मिली। ब्राउज़र की सेटिंग में इस साइट के लिए कैमरा चालू कीजिए, या नीचे से QR की फ़ोटो चुनिए।', true);
-      else if (n === 'NotFoundError' || n === 'OverconstrainedError') scMsg('इस फ़ोन में कैमरा नहीं मिला। नीचे से QR की फ़ोटो चुनिए।', true);
-      else if (n === 'NotReadableError') scMsg('कैमरा किसी दूसरे ऐप में चालू है। उसे बंद करके फिर कोशिश कीजिए।', true);
-      else if (m === 'load' || m === 'nojsqr') scMsg('स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।', true);
-      else scMsg('कैमरा चालू नहीं हो सका। साइट को Chrome या Safari में खोलिए (Instagram या WhatsApp के अंदर नहीं), या नीचे से QR की फ़ोटो चुनिए।', true);
+      if (n === 'NotAllowedError' || n === 'SecurityError') scMsg(tr('कैमरे की अनुमति नहीं मिली। ब्राउज़र की सेटिंग में इस साइट के लिए कैमरा चालू कीजिए, या नीचे से QR की फ़ोटो चुनिए।'), true);
+      else if (n === 'NotFoundError' || n === 'OverconstrainedError') scMsg(tr('इस फ़ोन में कैमरा नहीं मिला। नीचे से QR की फ़ोटो चुनिए।'), true);
+      else if (n === 'NotReadableError') scMsg(tr('कैमरा किसी दूसरे ऐप में चालू है। उसे बंद करके फिर कोशिश कीजिए।'), true);
+      else if (m === 'load' || m === 'nojsqr') scMsg(tr('स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।'), true);
+      else scMsg(tr('कैमरा चालू नहीं हो सका। साइट को Chrome या Safari में खोलिए (Instagram या WhatsApp के अंदर नहीं), या नीचे से QR की फ़ोटो चुनिए।'), true);
     });
   }
   function scFromFile(file) {
     if (!file) return;
-    scStop(); $('scResult').hidden = true; scMsg('फ़ोटो पढ़ रहे हैं…');
+    scStop(); $('scResult').hidden = true; scMsg(tr('फ़ोटो पढ़ रहे हैं…'));
     var url = URL.createObjectURL(file), img = new Image();
     img.onload = function () {
       decodeAny(img, img.naturalWidth, img.naturalHeight, true).then(function (t) {
         URL.revokeObjectURL(url);
-        if (t) { scMsg('QR मिल गया।'); scShow(t); }
-        else scMsg('इस फ़ोटो में QR नहीं मिला। साफ़ और सीधी फ़ोटो चुनिए।', true);
+        if (t) { scMsg(tr('QR मिल गया।')); scShow(t); }
+        else scMsg(tr('इस फ़ोटो में QR नहीं मिला। साफ़ और सीधी फ़ोटो चुनिए।'), true);
       }, function () {
         URL.revokeObjectURL(url);
-        scMsg('स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।', true);
+        scMsg(tr('स्कैन वाला हिस्सा लोड नहीं हुआ। इंटरनेट देखकर फिर कोशिश कीजिए।'), true);
       });
     };
-    img.onerror = function () { URL.revokeObjectURL(url); scMsg('यह फ़ोटो खुल नहीं पाई। दूसरी चुनिए।', true); };
+    img.onerror = function () { URL.revokeObjectURL(url); scMsg(tr('यह फ़ोटो खुल नहीं पाई। दूसरी चुनिए।'), true); };
     img.src = url;
   }
   $('scStart').addEventListener('click', scStart);
-  $('scStop').addEventListener('click', function () { scStop(); scMsg('कैमरा बंद है।'); });
+  $('scStop').addEventListener('click', function () { scStop(); scMsg(tr('कैमरा बंद है।')); });
   $('scGal').addEventListener('click', function () { $('scPick').click(); });
   $('scPick').addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; scFromFile(f); });
   $('scTorch').addEventListener('click', function () {
     var tr = scan.stream && scan.stream.getVideoTracks()[0];
     if (!tr) return;
     scan.torch = !scan.torch;
-    tr.applyConstraints({ advanced: [{ torch: scan.torch }] }).catch(function () { scan.torch = !scan.torch; toast('इस फ़ोन में टॉर्च नहीं चल सकी।'); });
+    tr.applyConstraints({ advanced: [{ torch: scan.torch }] }).catch(function () { scan.torch = !scan.torch; toast(tr('इस फ़ोन में टॉर्च नहीं चल सकी।')); });
   });
-  document.addEventListener('visibilitychange', function () { if (document.hidden && scan.running) { scStop(); scMsg('कैमरा बंद हो गया। दोबारा चालू कीजिए।'); } });
+  document.addEventListener('visibilitychange', function () { if (document.hidden && scan.running) { scStop(); scMsg(tr('कैमरा बंद हो गया। दोबारा चालू कीजिए।')); } });
   window.addEventListener('pagehide', scStop);
 
   /* ---------- मौजूदा लोकेशन ---------- */
   function fillLoc(inputId, msgId) {
     var msg = $(msgId);
-    if (!navigator.geolocation) { msg.textContent = 'इस ब्राउज़र में लोकेशन उपलब्ध नहीं है।'; return; }
-    msg.textContent = 'लोकेशन ढूँढ रहे हैं…';
+    if (!navigator.geolocation) { msg.textContent = tr('इस ब्राउज़र में लोकेशन उपलब्ध नहीं है।'); return; }
+    msg.textContent = tr('लोकेशन ढूँढ रहे हैं…');
     navigator.geolocation.getCurrentPosition(function (p) {
       $(inputId).value = 'https://maps.google.com/?q=' + p.coords.latitude.toFixed(6) + ',' + p.coords.longitude.toFixed(6);
-      msg.textContent = 'लोकेशन भर गई।';
+      msg.textContent = tr('लोकेशन भर गई।');
       requestRender();
     }, function () {
-      msg.textContent = 'लोकेशन की अनुमति नहीं मिली। मैप लिंक ख़ुद चिपकाइए।';
+      msg.textContent = tr('लोकेशन की अनुमति नहीं मिली। मैप लिंक ख़ुद चिपकाइए।');
     }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
   }
   $('eLocBtn').addEventListener('click', function () { fillLoc('eMap', 'eLocMsg'); });
   $('p3LocBtn').addEventListener('click', function () { fillLoc('p3Loc', 'p3LocMsg'); });
 
   /* ---------- लेवल, टेम्पलेट और रंग ---------- */
+  function tplPh() {
+    var t = TPL[$('tpl').value];
+    if ($('tpl').value === 'plain') return;
+    $('headText').placeholder = tr('जैसे: ') + t.head; $('subText').placeholder = tr('जैसे: ') + t.sub;
+  }
   function applyTemplate() {
     var key = $('tpl').value, t = TPL[key];
     $('posterText').hidden = key === 'plain';
-    if (key !== 'plain') { $('headText').value = ''; $('subText').value = ''; $('headText').placeholder = 'जैसे: ' + t.head; $('subText').placeholder = 'जैसे: ' + t.sub; }
+    if (key !== 'plain') { $('headText').value = ''; $('subText').value = ''; }
+    tplPh();
     dots['1'] = t.dot;
     if (tab === '1') $('dotColor').value = t.dot;
   }
@@ -1980,6 +2092,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     if (!sc) scStop();
     if (sc) return;
     $('dotColor').value = dots[t];
+    wzApply();
     render();
   }
   function showCtPane() {
@@ -1988,13 +2101,30 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   }
   SWATCH.forEach(function (col) {
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'sw'; b.style.background = col;
-    b.setAttribute('aria-label', 'रंग ' + col);
+    b.type = 'button'; b.className = 'sw'; b.style.background = col; b.setAttribute('data-col', col);
+    b.setAttribute('aria-label', tr('रंग ') + col);
     b.addEventListener('click', function () { $('dotColor').value = col; dots[tab] = col; render(); });
     $('swatches').appendChild(b);
   });
-  ['1', '2', '3', '4'].forEach(function (n) { $('lv' + n).addEventListener('click', function () { setTab(n); }); });
-  $('lv5').addEventListener('click', function () { setTab('5'); });
+  function workName() { $('workName').textContent = $('lv' + tab).querySelector('strong').textContent; }
+  function openLevel(n) {
+    wzAt[n] = 1;
+    document.body.setAttribute('data-view', 'work');
+    setTab(n); workName();
+    try { history.pushState({ v: 'work' }, ''); } catch (e) { /* ignore */ }
+    window.scrollTo(0, 0);
+  }
+  function goHome() {
+    scStop();
+    document.body.setAttribute('data-view', 'home');
+    window.scrollTo(0, 0);
+  }
+  ['1', '2', '3', '4', '5'].forEach(function (n) { $('lv' + n).addEventListener('click', function () { openLevel(n); }); });
+  $('btnHome').addEventListener('click', function () {
+    if (history.state && history.state.v === 'work') history.back(); else goHome();
+  });
+  window.addEventListener('popstate', goHome);
+  window.QRLang.onChange(function () { if (document.body.getAttribute('data-view') === 'work') workName(); });
   $('tpl').addEventListener('change', function () { applyTemplate(); render(); });
   $('dotColor').addEventListener('input', function () { dots[tab] = this.value; requestRender(); });
   Array.prototype.forEach.call(document.querySelectorAll('input[name="ctype"]'), function (r) {
@@ -2010,10 +2140,83 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     $(id).addEventListener('change', requestRender);
   });
 
+
+  /* ---------- स्टेप-बाय-स्टेप (वाइज़र्ड) ---------- */
+  function up(id, sel) { var n = $(id); return sel ? n.closest(sel) : n; }
+  function WZ() {
+    return {
+      '1': { titles: ['लिंक डालिए', 'पोस्टर चुनिए'], all: [], steps: [[up('linkSample'), up('linkUrl', '.field')], [up('tpl', '.field'), $('posterText')]] },
+      '2': { titles: ['आपकी पहचान', 'घरवालों के नंबर', 'पता और लोकेशन', 'मेडिकल और आउटपुट'], all: [],
+        steps: [[document.querySelector('.sosnote'), $('sosSample'), up('eName', '.row')], [up('ePhone', '.field'), up('eF1n', '.row')],
+          [up('eAddr', '.field'), up('eCity', '.field'), up('eMap', '.field')], [up('eNote', '.field'), up('eType', '.row')]] },
+      '3': { titles: ['फ़ोटो चुनिए', 'QR की जानकारी', 'पोस्टर का टेक्स्ट'], all: [$('p3Hint')],
+        steps: [[$('thumb').closest('.stack')], [document.querySelector('input[name="ctype"]').closest('.sec')], [up('p3Head', '.sec')]] },
+      '4': { titles: ['स्टिकर का ढंग', 'लोगो चुनिए', 'QR की जानकारी', 'स्टिकर का टेक्स्ट'], all: [$('p4Hint')],
+        steps: [[document.querySelector('.lgLayouts').parentNode], [up('lgThumb', '.sec')], [up('lgType', '.sec')], [up('lgName', '.sec')]] }
+    };
+  }
+  var wz = null, wzAt = { '1': 1, '2': 1, '3': 1, '4': 1 };
+  var CT_REQ = { url: 'p3Url', phone: 'p3Phone', wa: 'p3Wa', loc: 'p3Loc', mail: 'p3Mail', card: 'cName', text: 'p3Text' };
+  function wzNeed(level, step) {
+    var id = null;
+    if (level === '1' && step === 1) id = 'linkUrl';
+    else if (level === '2' && step === 1) id = 'eName';
+    else if (level === '2' && step === 2) id = 'ePhone';
+    else if (level === '3' && step === 2) { id = CT_REQ[ctype()]; if (id === 'p3Loc' && $('p3Addr').value.trim()) id = null; }
+    else if (level === '4' && step === 3) id = 'lgVal';
+    if (id && !$(id).value.trim()) return id;
+    return null;
+  }
+  function wzApply() {
+    if (!wz) wz = WZ();
+    var L = wz[tab]; if (!L) return;
+    var n = L.steps.length, total = n + 2, cur = Math.min(wzAt[tab], total);
+    ['1', '2', '3', '4'].forEach(function (k) {
+      var X = wz[k];
+      X.steps.forEach(function (list, i) {
+        list.forEach(function (el) { if (el) el.classList.toggle('wz-off', k !== tab || cur !== i + 1); });
+      });
+    });
+    $('shape').closest('.sec').classList.toggle('wz-off', cur !== n + 1);
+    document.querySelector('.preview').classList.toggle('wzhide', cur !== total);
+    var title = cur <= n ? L.titles[cur - 1] : (cur === n + 1 ? 'QR का स्टाइल' : 'प्रीव्यू और सेव');
+    $('wzStep').textContent = tr('कदम') + ' ' + cur + ' / ' + total;
+    $('wzTitle').textContent = tr(title);
+    $('wzFill').style.width = Math.round(cur / total * 100) + '%';
+    $('wzBack').hidden = cur === 1;
+    $('wzNext').hidden = cur === total;
+    $('wzMsg').hidden = true;
+  }
+  function wzGo(d) {
+    var L = wz[tab], total = L.steps.length + 2, cur = wzAt[tab];
+    if (d > 0) {
+      var need = wzNeed(tab, cur);
+      if (need) {
+        $('wzMsg').textContent = tr('पहले यह जानकारी भरिए।'); $('wzMsg').hidden = false;
+        try { $(need).focus(); } catch (e) { /* ignore */ }
+        return;
+      }
+    }
+    wzAt[tab] = Math.max(1, Math.min(total, cur + d));
+    wzApply(); render();
+    try { $('wzBar').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
+  }
+  $('wzNext').addEventListener('click', function () { wzGo(1); });
+  $('wzBack').addEventListener('click', function () { wzGo(-1); });
+  document.querySelector('.layout').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type !== 'radio' && e.target.type !== 'checkbox' && !$('wzNext').hidden) { e.preventDefault(); wzGo(1); }
+  });
+  window.QRLang.onChange(function () {
+    Array.prototype.forEach.call(document.querySelectorAll('#swatches .sw'), function (b) { b.setAttribute('aria-label', tr('रंग ') + b.getAttribute('data-col')); });
+    Array.prototype.forEach.call(document.querySelectorAll('#lgSwatches .sw'), function (b) { b.setAttribute('aria-label', tr('स्टिकर का रंग ') + b.getAttribute('data-col')); });
+    tplPh(); lgTypeUi(); wzApply(); render(); setupAppQR();
+  });
+
   setupShare();
   applyTemplate();
   showCtPane();
   lgTypeUi();
+  wzApply();
   render();
   setupAppQR();
   fontsReady.then(function () { render(); setupAppQR(); });
@@ -2025,6 +2228,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
+  var tr = window.tr;
   var KEY = 'qrs_install_dismiss', deferred = null;
   var ua = navigator.userAgent || '';
   var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -2037,13 +2241,15 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     try { return Date.now() - (+localStorage.getItem(KEY) || 0) < 7 * 86400000; } catch (e) { return false; }
   }
   function hideBar() { $('installBar').hidden = true; }
+  var lastIos = false;
   function showBar(ios) {
+    lastIos = ios;
     if (standalone() || dismissed()) return;
     $('instText').textContent = ios
-      ? 'iPhone में: नीचे Share (वर्ग और ऊपर तीर) दबाइए, फिर "Add to Home Screen" चुनिए।'
-      : 'फ़ोन में ऐप की तरह खुलेगा और ऑफ़लाइन भी चलेगा।';
+      ? tr('iPhone में: नीचे Share (वर्ग और ऊपर तीर) दबाइए, फिर "Add to Home Screen" चुनिए।')
+      : tr('फ़ोन में ऐप की तरह खुलेगा और ऑफ़लाइन भी चलेगा।');
     $('instGo').hidden = ios;
-    $('instNo').textContent = ios ? 'ठीक है' : 'बाद में';
+    $('instNo').textContent = ios ? tr('ठीक है') : tr('बाद में');
     $('installBar').hidden = false;
   }
   function pickGuide(which) {
@@ -2066,7 +2272,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   }
   function copyLink() {
     var u = location.href.split('#')[0], btn = $('inAppCopy');
-    function done(ok) { btn.textContent = ok ? 'लिंक कॉपी हो गया' : 'कॉपी नहीं हुआ: ' + u; }
+    function done(ok) { btn.textContent = ok ? tr('लिंक कॉपी हो गया') : tr('कॉपी नहीं हुआ: ') + u; }
     function fallback() {
       var ta = document.createElement('textarea');
       ta.value = u; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -2089,6 +2295,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     deferred = null; hideBar();
     $('guideInstall').hidden = true; $('installGuide').hidden = true; $('btnInstall').hidden = true;
   });
+  window.QRLang.onChange(function () { if (!$('installBar').hidden) { showBar(lastIos); } });
   $('instGo').addEventListener('click', install);
   $('btnInstall').addEventListener('click', install);
   $('guideInstall').addEventListener('click', install);
@@ -2118,7 +2325,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
 /* ऊपर का बैनर: हमारे चार ऐप, एक बार में एक, बारी-बारी से */
 (function () {
   'use strict';
-  var PROMO_MS = 1000;      // हर ऐप कितनी देर दिखे (मिलीसेकंड). धीमा करना हो तो 2500 कर दीजिए।
+  var tr = window.tr;
+  var PROMO_MS = 3500;      // हर ऐप कितनी देर दिखे (मिलीसेकंड). और धीमा करना हो तो बढ़ाइए।
   var PROMO_CTA = 'इंस्टॉल';
   function svg(s) { return 'data:image/svg+xml,' + encodeURIComponent(s); }
   var L_BILL = svg(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='5' y='5' width='54' height='54' rx='13' fill='#15803d'/><path d='M18 14h28v36l-5-3-4.5 3-4.5-3-4.5 3-4.5-3-5 3z' fill='#fff'/><text x='32' y='38' font-size='20' font-weight='700' text-anchor='middle' fill='#15803d' font-family='Arial,sans-serif'>&#8377;</text></svg>`);
@@ -2169,6 +2377,17 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
     return s;
   });
 
+  function promoText() {
+    slides.forEach(function (sl, i) {
+      var a = APPS[i], d = tr(a.long || a.desc);
+      sl.querySelector('strong').textContent = tr(a.name);
+      sl.querySelector('small').textContent = tr(a.desc);
+      sl.querySelector('.pcta').textContent = tr(PROMO_CTA);
+      sl.title = d;
+      sl.setAttribute('aria-label', tr(a.name) + ': ' + d + ' ' + tr(PROMO_CTA));
+    });
+  }
+  window.QRLang.onChange(promoText);
   var bar = document.createElement('div'); bar.className = 'pbar'; bar.setAttribute('aria-hidden', 'true');
   var dots = slides.map(function () { var d = document.createElement('i'); bar.appendChild(d); return d; });
   if (slides.length > 1) row.appendChild(bar);
@@ -2203,11 +2422,41 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--field); 
   row.addEventListener('touchcancel', function () { release(2500); }, { passive: true });
   document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
 
+  promoText();
   box.hidden = false;
   document.body.classList.add('has-promo');
   show(0);
   start();
 })();
 </script>
+<script>
+/* विज़िटर गिनती: हर ब्राउज़र की पहली विज़िट पर +1 (मुफ़्त abacus सेवा). सेवा न चले तो यह कार्ड छिपा रहता है। */
+(function () {
+  var NS = 'rajan03jha-qr-saathi', KEY = 'visits', BASE = 'https://abacus.jasoncameron.dev/';
+  if (!/^https?:$/.test(location.protocol) || !window.fetch) return;
+  var seen = false;
+  try { seen = localStorage.getItem('qrs_counted') === '1'; } catch (e) { /* ignore */ }
+  function show(n) {
+    var card = document.getElementById('visitCard'), el = document.getElementById('visN');
+    card.hidden = false;
+    var t0 = Date.now(), D = 1200;
+    (function step() {
+      var k = Math.min(1, (Date.now() - t0) / D);
+      el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))).toLocaleString('en-IN');
+      if (k < 1) requestAnimationFrame(step);
+    })();
+  }
+  function call(kind) {
+    return fetch(BASE + kind + '/' + NS + '/' + KEY).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  var first = seen ? call('get').catch(function () { return call('hit'); }) : call('hit');
+  first.then(function (j) {
+    if (typeof j.value !== 'number') return;
+    if (!seen) { try { localStorage.setItem('qrs_counted', '1'); } catch (e) { /* ignore */ } }
+    show(j.value);
+  }).catch(function () { /* कार्ड छिपा रहेगा */ });
+})();
+</script>
+<script>window.QRLang.init();</script>
 </body>
 </html>
