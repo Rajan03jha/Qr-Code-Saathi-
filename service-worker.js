@@ -1,5 +1,5 @@
 /* QR साथी: ऑफ़लाइन चलाने के लिए। संस्करण बदलने पर पुराना कैश अपने आप हट जाता है। */
-var VERSION = 'qr-saathi-v2';
+var VERSION = 'qr-saathi-v3';
 var SHELL = ['./', './index.html', './go.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
